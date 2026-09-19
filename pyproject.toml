@@ -1,0 +1,13 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["**/vendor/**"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+# Path adapters and thread limits must precede scientific-library imports.
+ignore = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

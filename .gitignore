@@ -1,0 +1,34 @@
+# Local environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.Rhistory
+.RData
+.Renviron
+# Inputs, outputs and credentials
+data/
+outputs/
+raw/
+*.h5
+*.h5ad
+*.rds
+*.RDS
+*.tif
+*.tiff
+*.czi
+*.npy
+*.npz
+*.parquet
+*.csv
+*.tsv
+*.xlsx
+*.docx
+*.pdf
+*.png
+*.svg
+.env
+*.pem

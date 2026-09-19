@@ -1,0 +1,53 @@
+[
+  {
+    "path": "scripts/common.py",
+    "original_sha256": "cc3a0be1e0cad7d3c10cb5e72f460566061c87a80a146e417824382969d0e693",
+    "release_sha256": "2fe1a34bd4e7e0a64edcb38a94b5d6cb39a0ad12c46d3444e13d43551b92629e"
+  },
+  {
+    "path": "scripts/02_run_uniform_pipeline.py",
+    "original_sha256": "95f4619bd317bab858c3d5b6b566006ccecced25a7f328f0dffa5088ea12635e",
+    "release_sha256": "44988850d604e1f19a85a76b92a211a6f8c04b3221d91dfe7cfa1dd823f8c5f9"
+  },
+  {
+    "path": "scripts/03_aggregate_uniform_results.py",
+    "original_sha256": "8a0229d4e748b6624a9b5c9a14541002ed5ea986e5df6e854ea08ba2e27a0eab",
+    "release_sha256": "d861e3ab050d47727bd9e0299d6da60c5f3c94b9bd028530d3928d5465de262e"
+  },
+  {
+    "path": "scripts/04_run_torus_null.py",
+    "original_sha256": "a2ced7324cbbd9597cb3968ee9e3de0ae9d12753a36950d58d367d53c7730edd",
+    "release_sha256": "63c16a24f9c396905b4c9a5aa1c36a31b224f431fc5c7e488efdcfbd5b52c70e"
+  },
+  {
+    "path": "vendor/00_config.py",
+    "original_sha256": "830fc29b9f493fbe0e0d2d9373573b2989482be199235796f3fbc61f520a6e5b",
+    "release_sha256": "abb19a8aab464c2817cca643e9a67590648b9c0f577c5d7651814668ebc5db53",
+    "release_note": "Unused display-only constants removed. Numerical analysis settings retained."
+  },
+  {
+    "path": "vendor/01_preprocessing.py",
+    "original_sha256": "b7dad1595f828d5c327b8e9e9dafef50e88662be534774e97249473b6733c473",
+    "release_sha256": "518ca5dd6d4dae29939441766125cb7474b6fd518fbcf36bc94debcec5784949"
+  },
+  {
+    "path": "vendor/02_microglia_segmentation.py",
+    "original_sha256": "983ef474db0c22bbc01eb86c9c6e884dda184959b43c296ce1c7d570c0ecefa9",
+    "release_sha256": "4df6d1a8fb0b0f2a954f049ec1fbfde826e8fdc7523c3a126e495b6b9e4e0109"
+  },
+  {
+    "path": "vendor/03_synapse_segmentation.py",
+    "original_sha256": "983f71e697ac5126e00328df86b60270527ef8a7dd47c85abcd4b2b2dbe89782",
+    "release_sha256": "63ee6b0c80598eeb0bbd2efd562c0c41e3d234754da3e5db30f7f67518f81d90"
+  },
+  {
+    "path": "vendor/04_contact_geometry.py",
+    "original_sha256": "5e11c6721d383e86741526fc5cfe1077348cd090e3a7001e5d2d5d94bbd6c12e",
+    "release_sha256": "8fa5cb60eaf8dd6f3bcc186dea2002e391535dede1ea610cfc98d8a30baf5ff5"
+  },
+  {
+    "path": "config/reanalysis_config.json",
+    "original_sha256": "8d915acdd7e7bbc10ac894da9313bfa43ab2cc9a17fd2cea2762dcaf07841505",
+    "release_sha256": "e5912ac6c7fbababc9407d73490028bada54ed0c5bd8bfe165ead525c834d4d5"
+  }
+]

@@ -1,0 +1,79 @@
+{
+  "release_name": "Reanalysis_overlap_blind_2026-07-13",
+  "random_seed": 20260713,
+  "workers": 14,
+  "markers": [
+    "5HT",
+    "ChaT",
+    "TH",
+    "gad65",
+    "vgat",
+    "vglut1",
+    "vglut2"
+  ],
+  "raw_path_overrides": {
+    "LPS:vglut2_liv5_SLM_z1": "vglut2 liv5 SLM z1.lsm",
+    "LPS:vglut2_kiv2_CA1_z2": "vglut2 kiv2 ca1 z2.lsm"
+  },
+  "design_recoveries": [
+    {
+      "dataset": "LPS",
+      "file_id": "vglut2_kiv2_CA1_z2",
+      "selected_filename": "vglut2 kiv2 ca1 z2.lsm",
+      "reason": "Restore the intended second CA1 field for VGLUT2 control: the later acquisition matches the 10-plane design, has usable VGLUT2 and Iba1 signal, is distinct from z1, and replaces rather than duplicates the off-design 11-plane acquisition. The field appeared in earlier processed outputs but was absent from the final historical stack summary."
+    }
+  ],
+  "full_overlap_threshold": 1.0,
+  "contact_distance_um": 0.1,
+  "specifications": {
+    "uniform_standard": {
+      "min_volume_factor": 1.0,
+      "max_volume_factor": 1.0,
+      "foreground_noise_k_factor": 1.0,
+      "global_intensity_factor": 1.0,
+      "description": "Marker-specific standard candidate criteria applied identically at every spatial location; Iba1 is withheld until labels are frozen"
+    },
+    "uniform_sensitive": {
+      "min_volume_factor": 0.5,
+      "max_volume_factor": 2.0,
+      "foreground_noise_k_factor": 0.75,
+      "global_intensity_factor": 1.0,
+      "description": "Globally smaller and lower-LoG marker-only criteria with the exact numeric object and rescue raw-intensity floors frozen from the standard marker-only segmentation of the same stack, applied identically at every spatial location; never conditioned on Iba1"
+    }
+  },
+  "mptp_th_base": {
+    "noise_sigma_k": 3.0,
+    "intensity_sigma_k": 3.0,
+    "min_volume_um3": 0.03,
+    "max_volume_um3": 8.0,
+    "fixed_noise_floor": 250.0
+  },
+  "mptp_th_intensity_floor_sensitivity": {
+    "primary_floor": 250.0,
+    "alternative_floors": [
+      200.0,
+      300.0
+    ],
+    "description": "Marker-only standard-detector bracket; every floor is applied identically to Sham and MPTP, and alternative candidate fields reuse the frozen primary Iba1 mask and exact primary torus shift field"
+  },
+  "torus_null": {
+    "n_shifts": 1000,
+    "minimum_shift_um": 10.0,
+    "full_overlap_threshold": 1.0
+  },
+  "mask_sensitivity": {
+    "sampling_scheme": "one_per_animal_marker_balanced_region",
+    "n_shifts": 200,
+    "morphology_voxels": [
+      -1,
+      0,
+      1
+    ],
+    "physical_offsets_um": [
+      -0.1,
+      0.0,
+      0.1
+    ],
+    "description": "Primary Iba1 factor 0.80 is tested against raw-image factor 0.70/0.90 rebuilds, no-fragment-cutoff and 0/0.15 um closing-radius rebuilds, physical -0.1/0/+0.1 um offsets, acquired-voxel stress tests, stricter fragment-volume cutoffs, and capped/legacy hole filling; observed and null are always recomputed together"
+  }
+}

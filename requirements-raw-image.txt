@@ -1,0 +1,4 @@
+-r requirements-core.txt
+# The original local numerical backend reports OpenCV 4.10.0.
+# Use one OpenCV distribution in this environment, not overlapping variants.
+opencv-python-headless==4.10.0.84
