@@ -55,7 +55,7 @@ for _, row in manifest[manifest.study.eq("GSE244652")].iterrows():
             )
     # Official tximport no-length counts already exist from the joint import.
     for mode, filename in [
-        ("no_length", "legacy_summed_counts_diagnostic.tsv.gz"),
+        ("no_length", "counts.tsv.gz"),
         ("length_scaled", "length_scaled_counts_sensitivity.tsv.gz"),
     ]:
         counts = pd.read_csv(folder / filename, sep="\t")

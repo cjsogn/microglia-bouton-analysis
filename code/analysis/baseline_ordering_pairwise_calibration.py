@@ -130,7 +130,7 @@ def main():
     mode = parser.parse_args().mode
     _require_banks()
     if NSIM < 14:
-        raise ValueError("NSIM must support all 14 historical worker batches")
+        raise ValueError("NSIM must support all 14 recorded worker batches")
     from multiprocessing import Pool
 
     NCORE = 14

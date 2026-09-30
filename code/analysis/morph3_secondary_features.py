@@ -5,14 +5,16 @@ animal-label tests use the retained permutation helper. Secondary display effect
 are divided by the sample SD across all animals, as in the deposited tables.
 This differs from the pairwise SD used for the primary branch-count display.
 
-This release makes the secondary table assembly explicit. It starts from the
-deposited feature measurements, not from a replacement segmentation or feature
-extractor. Unadjusted secondary P values are exported for audit, not as a new
+General shape measurements come from the retained feature table. Topology
+measurements may come from the retained table or a new topology extraction.
+Unadjusted secondary P values are exported for audit, not as a new
 confirmatory family. The fixed 5-um topology descriptor is not the reported
 control-percentile terminal-branch outcome.
 """
 
 from pathlib import Path
+import argparse
+import hashlib
 import json
 import sys
 
@@ -20,7 +22,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from mg_paths import MORPHOLOGY, output_dir, require_file
+from mg_paths import MORPHOLOGY, OUTPUT, output_dir, require_file
 from morph2_persistent_branches import COND, exact_contrast
 
 SHAPE_FEATURES = """vol_um3 surface_area_um2 sphericity sa_vol_ratio extent_3d
@@ -71,12 +73,48 @@ def summarize(data, features):
     return animals, pd.DataFrame(rows)
 
 
+def select_topology_input(mode="auto", explicit=None):
+    """Resolve one topology table without falling back from an explicit choice."""
+    if explicit is not None:
+        if mode != "auto":
+            raise ValueError("Use either --topology-features or --topology-source")
+        return require_file(explicit.expanduser().resolve()), "explicit"
+    if mode not in {"auto", "deposited", "regenerated"}:
+        raise ValueError(f"Unknown topology source: {mode}")
+    regenerated = OUTPUT / "morphology/topology_features_v6.csv"
+    if mode == "regenerated" or (mode == "auto" and regenerated.exists()):
+        return require_file(regenerated), "regenerated"
+    return require_file(MORPHOLOGY / "output/topology_features_v6.csv"), "deposited"
+
+
+def input_record(path):
+    with path.open("rb") as handle:
+        digest = hashlib.file_digest(handle, "sha256").hexdigest()
+    return {"path": str(path.resolve()), "sha256": digest}
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--topology-source",
+        choices=("auto", "deposited", "regenerated"),
+        default="auto",
+        help="Auto prefers topology measurements in the active run, then deposited measurements.",
+    )
+    parser.add_argument(
+        "--topology-features", type=Path, help="Explicit topology measurement table."
+    )
+    args = parser.parse_args()
     source = MORPHOLOGY / "output"
-    features = pd.read_csv(require_file(source / "features_3d_full_morphomics_v6_final.csv"))
+    features_path = require_file(source / "features_3d_full_morphomics_v6_final.csv")
+    topology_path, topology_source = select_topology_input(
+        args.topology_source, args.topology_features
+    )
+    features = pd.read_csv(features_path)
     if features.duplicated(["fov", "cell_id"]).any():
         raise ValueError("Duplicate eligible-cell keys")
-    topology = pd.read_csv(require_file(source / "topology_features_v6.csv"))
+    topology = pd.read_csv(topology_path)
+    print(f"Topology input ({topology_source}): {topology_path}", flush=True)
     topology = features[["fov", "cell_id", "animal", "group", "region"]].merge(
         topology,
         left_on=["fov", "cell_id"],
@@ -95,12 +133,17 @@ def main():
     (out / "secondary_feature_provenance.json").write_text(
         json.dumps(
             {
-                "inputs": ["features_3d_full_morphomics_v6_final.csv", "topology_features_v6.csv"],
+                "inputs": {
+                    "shape": input_record(features_path),
+                    "topology": input_record(topology_path),
+                },
+                "topology_source": topology_source,
                 "aggregation": "cell mean within field, field mean within animal",
                 "display_standardization": "sample SD across all retained animals",
                 "test": "exact two-sided animal-label permutation, unadjusted secondary P values",
                 "seed": "not applicable: exhaustive enumeration",
-                "feature_extraction_rerun": False,
+                "shape_measurements": "deposited",
+                "feature_extraction_run_by_this_script": False,
             },
             indent=2,
         )

@@ -3,7 +3,7 @@
 Scientific analysis and statistics code for the microglial bouton-association study.
 The repository contains the analyses used in the reported results, their required
 processing stages, configuration, dependencies, tests and review documentation.
-It contains no data, generated results, or document and graphics production tools.
+Data and generated results are supplied separately.
 
 ## Start here
 
@@ -27,7 +27,7 @@ python scripts/reproduce_core_imaging.py
 python scripts/reproduce_rna_from_counts.py
 python scripts/reproduce_human_from_counts.py
 python scripts/reproduce_morphology_primary.py
-python code/analysis/morph3_secondary_features.py
+python code/analysis/morph3_secondary_features.py --topology-source deposited
 python code/analysis/morph4_exploratory_mixed_models.py --check-optimizers
 ```
 
@@ -37,7 +37,10 @@ are protected from output overwrites. Use a fresh output location for each run.
 RNA wrappers reject existing result directories. Fourteen workers are used where
 supported. Raw-image concurrency must also respect available memory.
 
-The files `scripts/validate_reproduction.py` and `docs/VALIDATION.md` describe the
+Use [the reviewer guide](docs/REVIEWER_GUIDE.md) for the review sequence and
+[the analysis map](docs/CURRENT_CODE_SCOPE.md) to locate supporting analyses
+and their current figure and table references. The files
+`scripts/validate_reproduction.py` and `docs/VALIDATION.md` describe the
 checks against the retained outputs. Numerical reproduction does not establish
 that every modelling assumption holds.
 

@@ -2,7 +2,7 @@
 
 This is a table-assembly step, not a simulation. The simulation cache must
 contain all four named schemes and the explicitly selected pairwise scheme.
-See docs/CALIBRATION.md for historical seeds and realized draw counts.
+See docs/CALIBRATION.md for recorded seeds and realized draw counts.
 """
 
 from pathlib import Path

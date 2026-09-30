@@ -21,7 +21,6 @@ import types
 from datetime import datetime, timezone
 from pathlib import Path
 
-import h5py
 import numpy as np
 import pandas as pd
 
@@ -280,35 +279,11 @@ def prepare_gse213100(manifest, provenance):
         )
 
 
-def load_tx2gene(path: Path):
-    table = pd.read_csv(path, sep="\t")
-    if table.shape[1] < 2:
-        raise ValueError(path)
-    mapping = dict(zip(table.iloc[:, 0].astype(str), table.iloc[:, 1].astype(str)))
-    mapping_base = {k.rsplit(".", 1)[0]: v for k, v in mapping.items()}
-    return mapping, mapping_base
-
-
-def load_kallisto_unadjusted_diagnostic(path: Path, mapping, mapping_base):
-    """Historical import for regression checks only, never revised inference."""
-    with h5py.File(path, "r") as handle:
-        ids = handle["aux/ids"][:]
-        values = handle["est_counts"][:]
-    genes = {}
-    for raw_id, value in zip(ids, values):
-        tx = raw_id.decode() if isinstance(raw_id, bytes) else str(raw_id)
-        gene = mapping.get(tx) or mapping_base.get(tx.rsplit(".", 1)[0])
-        if gene and gene != "nan":
-            genes[gene] = genes.get(gene, 0.0) + float(value)
-    return pd.Series(genes, dtype=float)
-
-
 def prepare_gse244652(manifest, provenance):
     study = "GSE244652"
     folder = DATA_ROOT / "GSE244652_MPTP_sorted"
     tx_path = folder / "tx2gene_ensembl.tsv"
     record_source(tx_path, study, "transcript-to-gene map", provenance)
-    mapping, mapping_base = load_tx2gene(tx_path)
     groups = {}
     for path in sorted(folder.glob("*.h5")):
         name = path.stem
@@ -331,9 +306,7 @@ def prepare_gse244652(manifest, provenance):
             regimen = "subacute"
         elif re.fullmatch(r"[CM]\d+[SM]", code):
             group = "Control" if code.startswith("C") else "Treatment"
-            # In the encoded chronic-series filenames, the terminal letter is
-            # anatomical: S=striatum, M=midbrain.  Historical code treated it
-            # as regimen, which incorrectly pooled regions.
+            # The terminal letter identifies the anatomical region: S=striatum, M=midbrain.
             region = "Striatum" if code.endswith("S") else "Midbrain"
             regimen = "chronic_probenecid"
         else:
@@ -721,7 +694,7 @@ def write_unreplicated_source_manifest():
 
 
 def build_panel_entrez_mapping():
-    """Resolve only the prespecified symbols needed to label GSE75246.
+    """Resolve only the curated symbols needed to label GSE75246.
 
     The complete count matrix remains keyed by the deposited Entrez IDs.  The
     small cached mapping makes later reruns network-independent and records the
@@ -764,9 +737,7 @@ def build_panel_entrez_mapping():
     mapping.sort_values("gene").to_csv(out, sep="\t", index=False)
 
 
-# The one configuration value this stage needs. It was previously read from the imaging
-# pipeline's configuration file, which had to be carried along for a single integer and named
-# directories on the author's machine. It is fixed, so it is stated here.
+# Recorded seed for single-cell preparation.
 RANDOM_SEED = 20260713
 
 

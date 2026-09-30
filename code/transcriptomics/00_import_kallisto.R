@@ -61,11 +61,11 @@ for (i in seq_along(files)) {
 }
 # Both imports use the official reader and identical transcript mapping.
 raw <- tximport(import_files, type = "kallisto", tx2gene = resolved, countsFromAbundance = "no", dropInfReps = TRUE)
-corrected <- tximport(import_files, type = "kallisto", tx2gene = resolved, countsFromAbundance = "lengthScaledTPM",
+length_scaled <- tximport(import_files, type = "kallisto", tx2gene = resolved, countsFromAbundance = "lengthScaledTPM",
     dropInfReps = TRUE)
-if (!identical(dimnames(raw$counts), dimnames(corrected$counts))) stop("Import dimension mismatch")
-if (any(!is.finite(corrected$counts) | corrected$counts < 0)) stop("Invalid corrected counts")
-if (!isTRUE(all.equal(colSums(raw$counts), colSums(corrected$counts), tolerance = 1e-10))) stop("Mapped library totals changed")
+if (!identical(dimnames(raw$counts), dimnames(length_scaled$counts))) stop("Import dimension mismatch")
+if (any(!is.finite(length_scaled$counts) | length_scaled$counts < 0)) stop("Invalid length-scaled counts")
+if (!isTRUE(all.equal(colSums(raw$counts), colSums(length_scaled$counts), tolerance = 1e-10))) stop("Mapped library totals changed")
 write_matrix <- function(m, filename) {
     con <- gzfile(file.path(out, filename), "wt")
     on.exit(close(con))
@@ -74,13 +74,12 @@ write_matrix <- function(m, filename) {
 }
 options(digits = 17)
 write_matrix(raw$counts, "counts.tsv.gz")
-write_matrix(corrected$counts, "length_scaled_counts_sensitivity.tsv.gz")
-write_matrix(raw$counts, "legacy_summed_counts_diagnostic.tsv.gz")
-write_matrix(corrected$abundance, "gene_abundance_tpm.tsv.gz")
-write_matrix(corrected$length, "gene_effective_lengths.tsv.gz")
+write_matrix(length_scaled$counts, "length_scaled_counts_sensitivity.tsv.gz")
+write_matrix(length_scaled$abundance, "gene_abundance_tpm.tsv.gz")
+write_matrix(length_scaled$length, "gene_effective_lengths.tsv.gz")
 qc <- do.call(rbind, qc)
-qc$imported_gene_count <- nrow(corrected$counts)
-qc$length_scaled_count_total <- colSums(corrected$counts)
+qc$imported_gene_count <- nrow(length_scaled$counts)
+qc$length_scaled_count_total <- colSums(length_scaled$counts)
 qc$countsFromAbundance <- "no"
 write.table(qc, file.path(out, "import_qc.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
 writeLines(capture.output(sessionInfo()), file.path(out, "import_session_info.txt"))

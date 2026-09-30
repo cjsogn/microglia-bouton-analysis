@@ -2,7 +2,7 @@
   {
     "path": "scripts/common.py",
     "original_sha256": "cc3a0be1e0cad7d3c10cb5e72f460566061c87a80a146e417824382969d0e693",
-    "release_sha256": "2fe1a34bd4e7e0a64edcb38a94b5d6cb39a0ad12c46d3444e13d43551b92629e"
+    "release_sha256": "dce256803b232635ff4dd2145f5241dbc5d5aa56363acffa8a35595b9409627f"
   },
   {
     "path": "scripts/02_run_uniform_pipeline.py",
@@ -17,7 +17,7 @@
   {
     "path": "scripts/04_run_torus_null.py",
     "original_sha256": "a2ced7324cbbd9597cb3968ee9e3de0ae9d12753a36950d58d367d53c7730edd",
-    "release_sha256": "63c16a24f9c396905b4c9a5aa1c36a31b224f431fc5c7e488efdcfbd5b52c70e"
+    "release_sha256": "e3c0cab118fb307f888f0086cda8e51a54f4a4e0cab1ee290ea4bff7ddb3fb9f"
   },
   {
     "path": "vendor/00_config.py",

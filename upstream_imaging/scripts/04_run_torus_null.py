@@ -60,26 +60,6 @@ def atomic_npz(path: Path, **arrays):
             os.unlink(tmp)
 
 
-def count_overlap(labels, mask, totals, full_threshold, complete_eligible=None):
-    n = len(totals)
-    if n == 0:
-        return 0, 0, 0, 0
-    inside_ids = labels[mask]
-    inside_ids = inside_ids[inside_ids > 0]
-    inside = (
-        np.bincount(inside_ids, minlength=n + 1)[1:] if len(inside_ids) else np.zeros(n, dtype=int)
-    )
-    frac = np.divide(inside, totals, out=np.zeros(n, dtype=float), where=totals > 0)
-    if complete_eligible is None:
-        complete_eligible = np.ones(n, dtype=bool)
-    fully_overlapped = frac >= full_threshold
-    complete = int(np.sum(fully_overlapped & complete_eligible))
-    boundary_truncated = int(np.sum(fully_overlapped & ~complete_eligible))
-    any_overlap = int(np.sum(inside > 0))
-    partial = int(np.sum((inside > 0) & ~fully_overlapped))
-    return any_overlap, complete, partial, boundary_truncated
-
-
 def candidate_voxels(labels):
     """Return candidate voxel coordinates and label IDs in a fixed order."""
     z, y, x = np.nonzero(labels)

@@ -1,10 +1,10 @@
 # Analysis scope
 
-The [repository overview](../README.md) is the current entry-point map. Short reruns start from deposited spatial-null results, eligible-cell features/barcodes and biological-sample count matrices. They do not claim an end-to-end reconstruction from every acquisition file.
+Short reruns start from retained spatial-null outputs, eligible-cell measurements and biological-sample count matrices. The [analysis map](CURRENT_CODE_SCOPE.md) links these stages to the current results. [CONFOCAL_PIPELINE.md](CONFOCAL_PIPELINE.md) identifies the upstream processing stages and remaining source limits.
 
-## Raw confocal processing
+## Confocal processing
 
-Original acquisition files remain on the external drive and are not copied into the package. Saved masks, detector label arrays and object outputs are in `03_data/processed_confocal/`. The inventory also lists a historical LPS marker outside the manuscript, so select manuscript markers explicitly.
+Original acquisitions remain on the external drive. Saved masks, detector labels and object outputs are supplied under `03_data/processed_confocal/`. Select the reported markers explicitly when preparing the acquisition manifest.
 
 From the code root:
 
@@ -16,24 +16,38 @@ python upstream_imaging/scripts/03_aggregate_uniform_results.py
 python upstream_imaging/scripts/04_run_torus_null.py --dataset LPS --marker TH --specification uniform_standard --workers 14
 ```
 
-For MPTP, prepare a separate fresh output directory and use `--dataset MPTP --mptp-root /path/to/original/MPTP --marker TH --marker vglut1`. Review each script's `--help` before running all markers and specifications.
+This example processes TH. Repeat the relevant stages for the other selected markers and required specifications. MPTP processing uses a separate fresh output directory and `--dataset MPTP --mptp-root /path/to/original/MPTP --marker TH --marker vglut1` when preparing the manifest.
 
-`06_mask_and_specification_sensitivity.py` retains the mask and detector comparisons used in Figure S2. The separate candidate-matching analysis, which is not reported in the current manuscript or supplement, is not included. `MG_RAW_MANIFEST` can select a different explicitly prepared manifest.
+`06_mask_and_specification_sensitivity.py` implements the detector and mask comparisons in Figure S1. `MG_RAW_MANIFEST` can select another explicitly prepared manifest. Raw preprocessing requires the recorded OpenCV backend and stops if it is unavailable.
 
-Raw preprocessing requires the recorded OpenCV top-hat backend. The portable loader stops if that backend is unavailable, instead of silently choosing the vendor module's alternative implementation.
+Processing outputs go to `MG_OUTPUT_DIR/upstream_imaging`. The short imaging runner reads the retained `coauthor_inputs/pipeline/` tree. It does not automatically switch to a newly processed raw-image run. A complete new processing run must be checked before its outputs replace the statistical inputs.
 
-Outputs go to `MG_OUTPUT_DIR/upstream_imaging`. Use one numerical-library thread per worker and up to 14 workers. Establish memory demand with a representative stack before processing large stacks concurrently. Do not change detector settings, shift sampling or seeds to work around resource limits.
+Use one numerical-library thread per worker and up to 14 workers. Check the memory demand of a representative stack before processing large stacks concurrently. Preserve detector settings, seeds and the number of spatial shifts.
 
-## Morphology
+## Morphology inputs
 
-`morph1_topology_features.py` starts from supplied final label masks. `morph2_persistent_branches.py` uses barcodes and the final eligible-cell table and includes primary, regional, density-adjusted and threshold-sweep analyses. `reproduce_morphology_primary.py` is an explicit primary-only runner using the same functions. `morph3_secondary_features.py` assembles retained secondary tests from deposited feature measurements.
+`morph1_topology_features.py` extracts topology measurements and branch barcodes from final label masks. It writes both files to `MG_OUTPUT_DIR/morphology/`.
 
-The primary permutation recomputes the control percentile in each allocation. The fixed-threshold result remains in an explicitly labelled conditional column. The full-procedure result was already used in the manuscript. Packaging restored it to a stale source-data table and recovered builder.
+`morph2_persistent_branches.py` prefers barcodes from the active run and otherwise reads the retained barcodes. It uses the final eligible-cell table for inclusion and metadata. The primary test recomputes the control percentile in every animal-label allocation. Fixed-threshold results are separate conditional sensitivities.
 
-Earlier acquisition preprocessing, iterative cell-mask refinement and extraction of the general feature table are not presented as a newly reconstructed automated pipeline. Final masks, measurements, inclusion ledgers and provenance are supplied. Distinguish reviewing the origin of measurements from rerunning their statistical analysis.
+For the secondary measurements:
 
-## Longer analyses
+```sh
+python code/analysis/morph3_secondary_features.py --topology-source deposited
+```
 
-The analysis directory also contains marker-ordering calibration, spatial-null diagnostics, estimator choices, precision intervals and hierarchical count-model sensitivities. Their docstrings identify assumptions and inputs. They support reported analyses or their audit, not alternative primary models.
+To use a topology extraction from the active run:
 
-`derived_input()` prefers a regenerated predecessor in the active output directory and otherwise reads the deposited table. Keep each run in a fresh output directory. Software checks do not replace review of model assumptions.
+```sh
+python code/analysis/morph3_secondary_features.py --topology-source regenerated
+```
+
+The default `auto` mode selects the regenerated table when present. `--topology-features /path/to/table.csv` selects an explicit file. An explicitly requested file or regenerated table must exist. The script prints the chosen source and records its path and SHA256 hash. General shape measurements still come from the retained final feature table.
+
+Primary, regional, threshold and secondary tests remain separate from the exploratory mixed-model screen. Run that screen with `--check-optimizers` to apply the recorded convergence checks under the same model specification.
+
+## Other analyses
+
+The analysis directory includes marker-ordering calibration, density multiplicity correction, distance and intensity checks, descriptive precision intervals and count-model sensitivities. Consult [CURRENT_CODE_SCOPE.md](CURRENT_CODE_SCOPE.md) for entry points and outputs.
+
+`derived_input()` selects a regenerated predecessor in the active output directory when available and otherwise reads the retained input. Keep each run in a fresh output directory. Statistical assumptions require review independently of numerical reproduction.

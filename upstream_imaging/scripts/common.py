@@ -31,7 +31,6 @@ MANIFEST_PATH = Path(
 # downstream sensitivity tools cannot silently accept mutually stale outputs.
 PIPELINE_VERSION = "physical_geometry_v2_11_boundary_category_summary"
 MICROGLIA_MASK_VERSION = "physical_closing_process_fragments_no_hole_fill_v4"
-MATCHING_VERSION = "voxel_overlap_or_centroid_0p25_v5_consistent_threshold_sensitivity"
 TORUS_VERSION = "torus_v3_4_primary_edge_eligible_multiscale_distance"
 
 

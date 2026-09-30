@@ -1,19 +1,13 @@
 # -*- coding: utf-8 -*-
-"""What each estimator returns when the true enrichment is exactly 1.
+"""Compare per-stack and pooled-count estimators under the spatial null.
 
-The evaluated estimator is the natural per-stack statistic, the mean over stacks of
-log((observed + 0.5) / (null mean + 0.5)), runs low for sparse markers, and quotes a calibrated
-value for TH. This script computes it from the study's own torus arrays and writes it to a results
-file, so the justification for pooling counts before forming ratios traces to data.
+Each stack's observed count is replaced by a draw from its retained torus-null
+distribution. The per-stack estimator averages log ratios within region, then
+across regions within animal, before exponentiating the mean across animals.
 
-Each stack's observed count is replaced by a draw from that stack's own 1,000 torus shifts, which
-makes the true enrichment 1 by construction. The per-stack statistic is then formed by averaging the per-stack log ratio within region, then over regions within
-animal, then exponentiating the mean over animals.
-
-The estimator the paper actually uses is calibrated on the same draws, so the two are compared on
-identical data rather than on separate simulations: counts are pooled within animal and region, the
-region ratios are averaged with equal weight, and the animal means are averaged. Both estimators are
-calibrated on all three endpoints, contact, any overlap and complete inclusion.
+The pooled-count estimator uses the same draws. Counts are pooled within animal
+and region, region ratios receive equal weight, and animal means are averaged.
+Both estimators are evaluated for contact, any overlap and complete inclusion.
 """
 
 from __future__ import annotations

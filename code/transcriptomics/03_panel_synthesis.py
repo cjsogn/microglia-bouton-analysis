@@ -17,10 +17,9 @@ from scipy.stats import spearmanr
 from common import OUTPUT
 
 
-# Inputs come from MG_OUTPUT_DIR when one is set, because that is where stage 1 wrote them.
-# Reading the checkout instead left this stage unable to see its own pipeline's output.
+# Read the count preparation and model outputs from the active run directory.
 DERIVED = OUTPUT / "transcriptomics"
-# The pipeline wrote these to results/; in this deposit derived tables live in data/derived.
+# Panel summaries are written alongside the other analysis outputs.
 RESULTS = OUTPUT
 RESULTS.mkdir(parents=True, exist_ok=True)
 DE_DIR = DERIVED / "limma_voom"
@@ -224,36 +223,9 @@ def gse263094_cell_definition_sensitivity(panel):
     return summary
 
 
-def methods_note(manifest, cell_definition_audit):
-    audited_cells = int(cell_definition_audit["primary_cells"])
-    identical_selection = bool(not cell_definition_audit["distinct_cell_selection_perturbation"])
-    audit_sentence = (
-        f"The stricter margin retained the same {audited_cells:,} cells and "
-        "pseudobulk counts as the primary rule, so it is a classification-margin "
-        "audit rather than a distinct cell-selection sensitivity."
-        if identical_selection
-        else "The stricter margin changed the selected-cell pseudobulks and is "
-        "reported as a paired cell-definition sensitivity."
-    )
-    text = f"""# Transcriptomic rebuild: interpretation boundary
-
-This release analyzes {len(manifest)} raw-count contrasts from {manifest.study.nunique()} independent studies. Each count-matrix column is an independent experimental library/sample. Single-cell counts are summed by library before differential expression. TMM normalization and limma-voom are used, and each within-contrast FDR family contains all expression-filtered genes.
-
-GSE263094 has two independently prepared pooled 10x libraries per group, with three mice in each library (two male and one female); it does **not** provide two individual animals per group. Its preprocessing follows the source workflow with Scrublet doublet removal, 2,000 Seurat-v3 highly variable genes, 40 principal components, and sample-level Harmony correction. Broad lineage assignment includes monocyte/macrophage and neutrophil competitors. A resident-lineage margin rule is audited on the same libraries and is not counted as another study or contrast. {audit_sentence}
-
-Multiple regions, regimens, or timepoints from one accession remain dependent and are not counted as separate cohorts. Every contrast is reported on its own row; no study-level average is formed. With only two independent LPS studies and two independent MPTP studies, no gene-level random-effects meta-analysis, pooled confidence interval, heterogeneity statistic, or cross-injury correlation P value is reported.
-
-The encoded GSE244652 chronic-series filenames were reparsed as terminal `S = striatum` and `M = midbrain`. The historical code interpreted those letters as regimen and pooled anatomical regions.
-
-Moon 2025 (GSE307796) is retained only as a descriptive cell-state source, because it has one condition-level library in the available design. Cell counts are not substituted for biological replication.
-"""
-    (RESULTS / "transcriptomic_methods_and_interpretation.md").write_text(text)
-
-
 def main():
     manifest, panel, panel_de = load_results()
     cell_definition_sensitivity = gse263094_cell_definition_sensitivity(panel)
-    methods_note(manifest, cell_definition_sensitivity)
     summary = {
         "independent_studies": int(manifest.study.nunique()),
         "contrasts": int(len(manifest)),

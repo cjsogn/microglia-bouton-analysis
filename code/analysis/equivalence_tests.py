@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Descriptive 90% exact-test confidence sets for the retained imaging contrasts.
 
-The legacy filename is kept for compatibility. No equivalence margin, TOST test,
-or claim of absence is generated. The estimator and confidence-set grid are
-unchanged from the archived analysis. See docs/ANALYSIS_SCOPE.md.
+These intervals describe precision. No equivalence margin or TOST decision is
+applied. See docs/ANALYSIS_SCOPE.md for the analysis inputs.
 """
 
 from __future__ import annotations

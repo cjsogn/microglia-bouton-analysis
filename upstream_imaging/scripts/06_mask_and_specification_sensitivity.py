@@ -307,27 +307,6 @@ def build_threshold_masks(row, force=False):
         }
 
 
-def count_overlap(labels, mask, totals, full_threshold, complete_eligible=None):
-    n = len(totals)
-    if n == 0:
-        return 0, 0, 0
-    ids = labels[mask]
-    ids = ids[ids > 0]
-    inside = np.bincount(ids, minlength=n + 1)[1:] if len(ids) else np.zeros(n, dtype=np.int64)
-    frac = np.divide(inside, totals, out=np.zeros(n, float), where=totals > 0)
-    n_any = int(np.sum(inside > 0))
-    if complete_eligible is None:
-        complete_eligible = np.ones(n, dtype=bool)
-    fully_overlapped = frac >= full_threshold
-    n_complete = int(np.sum(fully_overlapped & complete_eligible))
-    # Boundary-truncated candidates that otherwise meet the complete-inclusion
-    # threshold are neither eligible complete events nor partial overlaps. This
-    # matches the released torus implementation and keeps acquisition-boundary
-    # truncation from being relabelled as biology.
-    n_partial = int(np.sum((inside > 0) & ~fully_overlapped))
-    return n_any, n_complete, n_partial
-
-
 def candidate_voxels(labels):
     z, y, x = np.nonzero(labels)
     ids = labels[z, y, x].astype(np.int32, copy=False)

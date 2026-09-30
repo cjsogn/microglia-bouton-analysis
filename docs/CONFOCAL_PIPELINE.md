@@ -37,6 +37,8 @@ Final cell masks and morphology measurements are supplied under `coauthor_inputs
 
 ## Retained-source limits
 
-The final general morphology feature table is available, but its entire upstream extraction workflow has not been reconstructed in this release. The forty-descriptor mixed-model screen was recovered and is implemented separately in `code/analysis/morph4_exploratory_mixed_models.py`. Run it with `--check-optimizers` to retry failed fits under the same model specification. This exploratory screen is distinct from the secondary exact-test analysis above.
+The final general morphology feature table is available. Its complete extraction and iterative mask-refinement workflow is not verified as a portable pipeline in this release. The exploratory mixed-model screen is implemented in `code/analysis/morph4_exploratory_mixed_models.py`. Run it with `--check-optimizers` to check convergence under the recorded model specification. This screen is separate from the secondary exact tests.
 
-Some upstream density and brightness result tables also lack a verified portable generator in this release. Their retained values support the current downstream analyses and figures. These source-code gaps should be resolved or explicitly documented before claiming end-to-end raw-data reproducibility. They do not, by themselves, establish that the retained measurements or results are wrong.
+The density multiplicity correction starts from `coauthor_inputs/pipeline/results/absolute_density_treatment_effects.tsv`. The brightness restrictions use the retained `coauthor_inputs/source_data/S12_brightness_restricted.tsv`. Their upstream generators have not been verified in this release. These are retained-input reproduction boundaries, not evidence that the stored results are incorrect.
+
+Source processing and downstream statistical reruns are distinct entry points. See [ANALYSIS_SCOPE.md](ANALYSIS_SCOPE.md) for explicit morphology input selection and the raw-imaging handoff. Do not describe the short runners as an end-to-end raw-data reconstruction.

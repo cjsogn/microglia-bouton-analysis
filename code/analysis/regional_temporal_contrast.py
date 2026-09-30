@@ -105,10 +105,7 @@ def regional_marker_summaries(animals):
 
 
 def regional_control_effects(ar):
-    """Recompute treatment/control effects using the primary pooled estimator.
-
-    Do not import the upstream legacy mean-stack log ratios or bootstrap intervals.
-    """
+    """Treatment/control effects using the primary pooled estimator."""
     rows = []
     for region in REGIONS:
         g = ar.loc[ar.marker.eq("TH") & ar.region.eq(region)]
@@ -185,52 +182,9 @@ def main():
     )
     th.to_csv(out / "regional_th_animal_values.tsv", sep="\t", index=False)
 
-    # Upstream effects use mean per-stack pseudocount log ratios and bootstrap
-    # intervals. Preserve them in the reconciliation, not as the active estimates.
-    upstream = pd.read_csv(PIPELINE / "results/region_resolved_treatment_effects.tsv", sep="\t")
-    legacy = upstream.loc[
-        upstream.dataset.eq("LPS")
-        & upstream.marker.eq("TH")
-        & upstream.endpoint.eq("proximity_contact")
-        & upstream.specification.eq("uniform_standard")
-    ].copy()
-    assert len(legacy) == 10
-    legacy["bh_q_within_TH_region_family"] = multipletests(
-        legacy.exact_two_sided_p, method="fdr_bh"
-    )[1]
-    legacy = legacy.rename(
-        columns={"bh_q_within_exploratory_region_family": "bh_q_upstream_70_test_family"}
-    )
-    cols = [
-        "region",
-        "treatment",
-        "effect_ratio",
-        "ci_low_ratio",
-        "ci_high_ratio",
-        "exact_two_sided_p",
-        "bh_q_within_TH_region_family",
-        "bh_q_upstream_70_test_family",
-    ]
     effects = regional_control_effects(ar)
     effects.to_csv(out / "regional_th_per_region.tsv", sep="\t", index=False)
-    legacy[cols].merge(
-        effects, on=["region", "treatment"], suffixes=("_legacy", "_corrected")
-    ).to_csv(out / "regional_th_legacy_reconciliation.tsv", sep="\t", index=False)
-    source = pd.read_csv(SOURCE_DATA / "S4_per_animal_region_enrichment.tsv", sep="\t")
-    source = source.loc[
-        source.dataset.eq("LPS")
-        & source.marker.eq("TH")
-        & source.endpoint.eq("proximity_contact")
-        & source.specification.eq("uniform_standard")
-    ]
-    for row in legacy.itertuples():
-        g = source.loc[source.region.eq(row.region)]
-        old = g.legacy_mean_stack_log_pseudocount_ratio
-        predicted = np.exp(
-            old[g.condition.eq(row.treatment)].mean() - old[g.condition.eq("Control")].mean()
-        )
-        np.testing.assert_allclose(predicted, row.effect_ratio, rtol=1e-12)
-    # Independent estimator reconciliation against the animal source, not just q values.
+    # Verify the treatment ratios directly against the animal-level values.
     for row in effects.itertuples():
         g = th[th.region.eq(row.region)]
         ratio = np.exp(
@@ -292,7 +246,6 @@ def main():
     ).to_csv(out / "regional_iba1_correlation_summary.tsv", sep="\t", index=False)
     inputs = [
         SOURCE_DATA / "S4_per_animal_region_enrichment.tsv",
-        PIPELINE / "results/region_resolved_treatment_effects.tsv",
         PIPELINE / "results/uniform_stack_summary.tsv",
     ]
     provenance = dict(
@@ -303,7 +256,7 @@ def main():
         interaction="sum of squared group mean differences in animal-centred regional log enrichment",
         fdr="five direct regional temporal tests; existing ten TH treatment/control tests kept separate",
         descriptive_summary="Arithmetic mean enrichment and 95% exhaustive animal-bootstrap percentile intervals within each condition, region and marker. No additional hypothesis tests.",
-        correction="Regional treatment/control effects rebuilt from pooled counts. Legacy stack-log estimates and bootstrap intervals retained only in reconciliation.",
+        estimator="Observed and expected counts pooled within animal, marker and region before forming enrichment ratios.",
         input_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},
     )
     (out / "regional_figure5_provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")

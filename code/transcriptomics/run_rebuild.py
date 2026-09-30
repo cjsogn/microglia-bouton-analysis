@@ -26,9 +26,7 @@ def main():
     parser.add_argument("--stage", choices=["all", "prepare", "de", "synthesis"], default="all")
     args = parser.parse_args()
     scripts = Path(__file__).resolve().parent
-    # Stage 1 writes under MG_OUTPUT_DIR, so stages 2 and 3 must look there too. Reading the
-    # checkout instead left stage 2 unable to find stage 1's output.
-
+    # All stages share the active run directory.
     derived = OUTPUT / "transcriptomics"
     de_dir = derived / "limma_voom"
     sensitivity_manifest = derived / "gse263094_cell_definition_sensitivity_manifest.tsv"
@@ -49,16 +47,15 @@ def main():
                 de_dir,
             ]
         )
-        if sensitivity_manifest.exists():
-            sensitivity_de_dir.mkdir(parents=True, exist_ok=True)
-            run(
-                [
-                    "Rscript",
-                    scripts / "02_limma_voom.R",
-                    sensitivity_manifest,
-                    sensitivity_de_dir,
-                ]
-            )
+        sensitivity_de_dir.mkdir(parents=True, exist_ok=True)
+        run(
+            [
+                "Rscript",
+                scripts / "02_limma_voom.R",
+                sensitivity_manifest,
+                sensitivity_de_dir,
+            ]
+        )
     if args.stage in {"all", "synthesis"}:
         run([sys.executable, scripts / "03_panel_synthesis.py"])
 

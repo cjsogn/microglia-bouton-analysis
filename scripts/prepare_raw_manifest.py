@@ -1,7 +1,7 @@
 """Resolve the deposited raw inventory against explicitly supplied raw-image roots.
 
 This does not guess paths or launch processing. It fails if any selected file is
-missing. The inventory includes historical markers beyond the retained paper.
+missing. The inventory includes additional markers outside the reported analyses.
 Use --marker repeatedly to select the intended marker population.
 """
 

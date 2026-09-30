@@ -1,6 +1,6 @@
 """Output workspace for the unchanged putamen annotation and validation stages.
 
-Use scripts/prepare_putamen_workspace.py before annotation or plotting. The
+Use scripts/prepare_putamen_workspace.py before annotation or verification. The
 workspace contains copies, never links into deposited inputs.
 """
 

@@ -73,7 +73,7 @@ def main():
         type=Path,
         default=BUNDLE
         / "original_analysis_inputs/pipeline/data/derived/transcriptomics/prespecified_gene_panel.tsv",
-        help="Retained curated gene inventory. The historical filename does not imply preregistration.",
+        help="Retained curated gene inventory. The panel is descriptive and was not preregistered.",
     )
     args = parser.parse_args()
     out = require_writable_output(args.out)
@@ -119,26 +119,30 @@ def main():
         gene_retention.append(pd.Series(count, index=a.var_names, name=a.obs.condition.iloc[0]))
         b = a[:, count >= 5].copy()
         filtered.append(b)
-    legacy = sc.concat(filtered, join="inner", merge="same")
-    sc.pp.normalize_total(legacy, target_sum=1e4)
-    sc.pp.log1p(legacy)
+    selection_expression = sc.concat(filtered, join="inner", merge="same")
+    sc.pp.normalize_total(selection_expression, target_sum=1e4)
+    sc.pp.log1p(selection_expression)
     for name, score in [("MICROGLIA_MARKERS", "mg_score"), ("NON_MG_MARKERS", "nonmg_score")]:
-        genes = [g for g in definitions[name] if g in legacy.var_names]
-        sc.tl.score_genes(legacy, gene_list=genes, score_name=score, random_state=0)
-    legacy.obs["mg_minus_nonmg"] = legacy.obs.mg_score - legacy.obs.nonmg_score
-    selected = (legacy.obs.mg_score > 0.3) & (legacy.obs.mg_minus_nonmg > 0.2)
-    legacy.obs["selected_microglia"] = selected
+        genes = [g for g in definitions[name] if g in selection_expression.var_names]
+        sc.tl.score_genes(selection_expression, gene_list=genes, score_name=score, random_state=0)
+    selection_expression.obs["mg_minus_nonmg"] = (
+        selection_expression.obs.mg_score - selection_expression.obs.nonmg_score
+    )
+    selected = (selection_expression.obs.mg_score > 0.3) & (
+        selection_expression.obs.mg_minus_nonmg > 0.2
+    )
+    selection_expression.obs["selected_microglia"] = selected
     expected = pd.read_csv(args.reference_table)
     checks = []
     for c in CONDITIONS:
-        idx = selected & legacy.obs.condition.eq(c)
+        idx = selected & selection_expression.obs.condition.eq(c)
         n = int(idx.sum())
         assert n == int(expected.loc[expected.condition.eq(c), "selected_microglia"].iloc[0]), (
             c,
             n,
         )
         for r in expected[expected.condition.eq(c)].itertuples(index=False):
-            values = legacy[idx, r.gene].X
+            values = selection_expression[idx, r.gene].X
             mean = float(values.mean())
             positive = int((values > 0).sum())
             assert positive == r.positive_microglia, (c, r.gene, positive)
@@ -148,13 +152,13 @@ def main():
         )
     print("Original cell selection and receptor tables reproduced.", flush=True)
     retention = pd.concat(gene_retention, axis=1)
-    retention["retained_legacy_intersection"] = retention.index.isin(legacy.var_names)
+    retention["retained_legacy_intersection"] = retention.index.isin(selection_expression.var_names)
     retention.to_csv(out / "gene_filter_audit.tsv", sep="\t", index_label="gene")
-    selected_ids = legacy.obs.index[selected]
+    selected_ids = selection_expression.obs.index[selected]
     raw_all = ad.concat(raw, join="inner", merge="same")
     raw_all = raw_all[selected_ids].copy()
     assert raw_all.obs_names.equals(selected_ids)
-    cell_qc = legacy.obs.copy()
+    cell_qc = selection_expression.obs.copy()
     cell_qc.to_csv(out / "cell_selection.tsv.gz", sep="\t", index_label="cell_id")
     normalized = raw_all.copy()
     sc.pp.normalize_total(normalized, target_sum=1e4)
@@ -197,7 +201,7 @@ def main():
                     frac=positive / n if present else None,
                     mean_log1p_10k=mean,
                     feature_present=present,
-                    retained_legacy_intersection=gene in legacy.var_names,
+                    retained_legacy_intersection=gene in selection_expression.var_names,
                     neurotransmitter_family=nt.get(gene, ""),
                     broad_catalogue=gene in broad,
                     curated_transcript_panel=gene in panel_genes,
@@ -215,7 +219,7 @@ def main():
         source.update(next(c for c in checks if c["condition"] == source["condition"]))
     audit = dict(
         libraries=provenance,
-        original_shared_gene_count=legacy.n_vars,
+        original_shared_gene_count=selection_expression.n_vars,
         full_shared_feature_count=raw_all.n_vars,
         n_summary_genes=len(genes),
         biological_libraries_per_condition=1,
