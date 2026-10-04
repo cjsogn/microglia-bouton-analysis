@@ -112,23 +112,13 @@ with ThreadPoolExecutor(max_workers=14) as pool:
     for cid in pool.map(fit, jobs):
         print("Fit", cid, flush=True)
 tables = []
-genes = [
-    "C3",
-    "C3ar1",
-    "C1qa",
-    "Tnf",
-    "Il1b",
-    "P2ry12",
-    "Tmem119",
-    "Cx3cr1",
-    "Trem2",
-    "Axl",
-    "Mertk",
-]
+genes = pd.read_csv(ROOT / "config/transcript_panel.tsv", sep="\t").gene.tolist()
 for job in jobs:
     path = OUT / "fits" / job["contrast_id"] / (job["contrast_id"] + "_limma_voom.tsv.gz")
     d = pd.read_csv(path, sep="\t")
-    d = d[d.gene_id.isin(genes)].copy()
+    d = pd.DataFrame({"gene_id": genes}).merge(d, on="gene_id", how="left", validate="one_to_one")
+    d["tested"] = d["P.Value"].notna()
+    d["contrast_id"] = job["contrast_id"]
     d["original_contrast"] = job["original_contrast"]
     d["import_mode"] = job["import_mode"]
     d["omitted_sample"] = job["omitted_sample"]

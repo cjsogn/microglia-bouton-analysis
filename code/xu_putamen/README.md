@@ -26,7 +26,7 @@ Rscript code/xu_putamen/code/03_extract_donor_metadata.R /path/to/new/putamen_wo
 python code/xu_putamen/code/04_independent_annotation.py prepare
 ```
 
-Inspect lineage markers and clustering before selecting immune clusters. The retained run used `immune --clusters 11 12`, followed by `finalize --clusters 2 3 4 5 6 7 8 --harmony-clusters 1 2 4 7 8`. Those identifiers describe the recorded run, not guaranteed identities after reclustering. The target-gene panel is excluded from clustering features and annotation marker rankings. Harmony affects only the alternative annotation, not the raw counts used for testing.
+Inspect lineage markers and clustering before selecting immune clusters. The retained run used `immune --clusters 11 12`, followed by `finalize --clusters 2 3 4 5 6 7 8 --harmony-clusters 1 2 4 7 8`. Those identifiers describe the recorded run, not guaranteed identities after reclustering. The fixed eleven-gene list `ANNOTATION_EXCLUSIONS` is excluded from clustering features and annotation marker rankings. It does not include ADRB2 and is distinct from the 25-gene reporting catalogue. Harmony affects only the alternative annotation, not the raw counts used for testing.
 
 After annotation:
 

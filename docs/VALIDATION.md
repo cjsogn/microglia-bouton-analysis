@@ -1,6 +1,18 @@
-# Validation, 30 September 2026
+# Validation
 
-## Executed checks
+## Panel extraction and metadata check, 4 October 2026
+
+All 47 tests, Ruff 0.16.6 lint and formatting checks, and syntax checks for the modified R files passed. Tests include panel definition, result extraction, explicit untested status and GEO record parsing.
+
+The 25-gene catalogue and ordered 12-gene comparison subset now share one configuration. Full-panel extraction covers the nine mouse primary contrasts, 56 MPTP import/sample fits, four SNpc fits and thirteen putamen fits. Extracted statistics match the retained complete-fit files exactly. No count matrix, cell selection, expression filter, model fit or whole-transcriptome BH family was changed or recalculated.
+
+Fresh GEO SOFT records for all seven accessions and the published putamen donor table were reconciled with the retained metadata. All 386 field comparisons passed. They cover sample assignment, diagnosis, tissue/selection descriptors, and human age, sex, postmortem interval and SNpc RIN where applicable. Treatment timing was also checked against source protocols and publication records. Source files, hashes and field-level comparisons are supplied separately with the review package.
+
+The fixed eleven putamen annotation exclusions remain unchanged. ADRB2 is now included in the comparative reporting subset but was not added to annotation exclusions. The wider extraction contains one Cst7 FDR-positive result in a chronic striatal original-count sample-omission fit, not in its primary fit. No displayed comparison gene is FDR-positive in those GSE244652 sensitivity fits.
+
+This reporting update did not refit models or rerun upstream image processing or cell annotation. It does not constitute an independent imaging-code review.
+
+## Executed checks, 30 September 2026
 
 The analysis-only repository passed all 41 tests, the configured lint and format checks, and R syntax checks. Tests cover protected output paths, statistical helpers, RNA input staging and explicit morphology input selection.
 

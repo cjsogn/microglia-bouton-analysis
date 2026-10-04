@@ -1,0 +1,2 @@
+# An empty final TSV field is a valid delimiter, not trailing prose whitespace.
+config/transcript_panel.tsv whitespace=-blank-at-eol

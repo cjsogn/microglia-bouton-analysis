@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-from common import OUTPUT
+from common import OUTPUT, ROOT
 
 
 # Read the count preparation and model outputs from the active run directory.
@@ -27,7 +27,10 @@ DE_DIR = DERIVED / "limma_voom"
 
 def load_results():
     manifest = pd.read_csv(DERIVED / "contrast_manifest.tsv", sep="\t")
-    panel = pd.read_csv(DERIVED / "prespecified_gene_panel.tsv", sep="\t")
+    panel = pd.read_csv(ROOT / "config/transcript_panel.tsv", sep="\t")
+    supplied = pd.read_csv(DERIVED / "prespecified_gene_panel.tsv", sep="\t")
+    if set(supplied.gene) != set(panel.gene):
+        raise ValueError("Prepared and configured panel gene sets differ")
     entrez = pd.read_csv(DERIVED / "panel_symbol_to_entrez.tsv", sep="\t", dtype=str)
     reverse_entrez = dict(zip(entrez.entrezgene.astype(str), entrez.gene))
     all_tables = []
@@ -63,7 +66,6 @@ def load_results():
                         "n_treatment": rec.n_treatment,
                         "gene": gene,
                         "mechanism": definition.mechanism,
-                        "expected_direction": definition.expected_direction,
                         "log2fc": row.logFC,
                         "se_log2fc": row.se_log2fc,
                         "ci95_low": row.ci95_low,
@@ -87,17 +89,10 @@ def load_results():
                         "n_treatment": rec.n_treatment,
                         "gene": gene,
                         "mechanism": definition.mechanism,
-                        "expected_direction": definition.expected_direction,
                         "tested": False,
                     }
                 )
     panel_de = pd.DataFrame(rows)
-    panel_de["aligned_log2fc"] = np.where(
-        panel_de.expected_direction.eq("down"),
-        -panel_de.log2fc,
-        panel_de.log2fc,
-    )
-    panel_de["direction_matches_panel"] = panel_de.aligned_log2fc > 0
     panel_de.to_csv(
         RESULTS / "transcriptomic_biological_sample_panel_de.tsv", sep="\t", index=False
     )

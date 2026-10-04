@@ -25,6 +25,7 @@ raw/
 *.parquet
 *.csv
 *.tsv
+!config/transcript_panel.tsv
 *.xlsx
 *.docx
 *.pdf

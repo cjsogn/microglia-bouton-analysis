@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from common import EXTERNAL, OUTPUT, sha256_file
+from common import EXTERNAL, OUTPUT, ROOT, sha256_file
 
 
 # Raw count inputs are supplied separately from code in the full data bundle.
@@ -35,33 +35,10 @@ DATA_ROOT = EXTERNAL
 DERIVED = OUTPUT / "transcriptomics"
 COUNTS_DIR = DERIVED / "contrasts"
 
-PANEL = {
-    "C1qa": ("Complement", "up"),
-    "C1qb": ("Complement", "up"),
-    "C1qc": ("Complement", "up"),
-    "C3": ("Complement", "up"),
-    "C3ar1": ("Complement_receptor", "up"),
-    "Itgam": ("Complement_receptor", "up"),
-    "Itgb2": ("Complement_receptor", "up"),
-    "Trem2": ("Phagocytosis", "up"),
-    "Tyrobp": ("Phagocytosis", "up"),
-    "Mertk": ("TAM", "up"),
-    "Axl": ("TAM", "up"),
-    "Cd68": ("Phagolysosome", "up"),
-    "Lgals3": ("Phagocytosis", "up"),
-    "Apoe": ("Reactive_state", "up"),
-    "Cst7": ("Reactive_state", "up"),
-    "Spp1": ("Reactive_state", "up"),
-    "Clec7a": ("Reactive_state", "up"),
-    "P2ry12": ("Homeostatic", "down"),
-    "Tmem119": ("Homeostatic", "down"),
-    "Cx3cr1": ("Homeostatic", "down"),
-    "Sall1": ("Homeostatic", "down"),
-    "Adrb2": ("Adrenergic_restraint", "down"),
-    "Il1b": ("Inflammatory", "up"),
-    "Tnf": ("Inflammatory", "up"),
-    "Ccl2": ("Chemotactic", "up"),
-}
+PANEL_DEFINITION = pd.read_csv(ROOT / "config/transcript_panel.tsv", sep="\t")
+PANEL = dict(zip(PANEL_DEFINITION.gene, PANEL_DEFINITION.mechanism))
+if len(PANEL) != len(PANEL_DEFINITION) or PANEL_DEFINITION.gene.isna().any():
+    raise ValueError("Panel symbols must be present and unique")
 
 
 def record_source(path: Path, study: str, role: str, provenance: list[dict]):
@@ -745,12 +722,7 @@ def main():
     DERIVED.mkdir(parents=True, exist_ok=True)
     COUNTS_DIR.mkdir(parents=True, exist_ok=True)
     manifest, provenance = [], []
-    panel = pd.DataFrame(
-        [
-            {"gene": gene, "mechanism": mechanism, "expected_direction": direction}
-            for gene, (mechanism, direction) in PANEL.items()
-        ]
-    )
+    panel = PANEL_DEFINITION.copy()
     panel.to_csv(DERIVED / "prespecified_gene_panel.tsv", sep="\t", index=False)
     build_panel_entrez_mapping()
     prepare_gse75246(manifest, provenance)

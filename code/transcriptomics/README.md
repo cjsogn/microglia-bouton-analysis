@@ -40,6 +40,16 @@ The sensitivity script reads the original command metadata, compares the two imp
 
 ## Input naming
 
+`config/transcript_panel.tsv` is the shared 25-gene definition. Nonmissing `comparison_order` values identify the 12 genes in the comparative display, including Adrb2. These genes cover the processes discussed in the study, while the complete panel remains available in Tables S15–S17. Panel extraction does not change any expression filter, fitted estimate or whole-transcriptome FDR value.
+
+To extract the full panel from the retained complete fits:
+
+```sh
+python scripts/export_transcript_panels.py --out /path/to/new/panel_results
+```
+
+The output includes all requested genes and explicit measured/tested status. The human models use uppercase human gene symbols. The putamen annotation exclusions are a separate, fixed list in its annotation module, not the reporting catalogue.
+
 The curated panel is stored as `prespecified_gene_panel.tsv` in the supplied data. This input name does not imply preregistration. File and column names used by retained data are kept stable unless the workflow explicitly maps them.
 
 See [validation](../../docs/VALIDATION.md) for executed checks and [analysis scope](../../docs/ANALYSIS_SCOPE.md) for the boundary between retained-input reruns and source processing.

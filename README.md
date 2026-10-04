@@ -76,6 +76,11 @@ contrasts have separate FDR families. Adding human data does not change mouse
 significance. The pooled Moon libraries support descriptive summaries, not
 animal-level treatment tests. No retained model uses imputation.
 
+The shared panel definition is `config/transcript_panel.tsv`: 25 curated genes,
+with 12 marked for the compact comparison. All 25 are retained in the numerical
+supplement. The reporting subset does not define the multiple-testing family.
+See the reviewer guide for result extraction and primary-record metadata checks.
+
 Subsystem READMEs explain upstream stages. For reclustering, inspect identity
 markers before reusing cluster identifiers. Count-level reruns use the retained
 selections. Raw confocal acquisitions are stored separately and are not bundled.

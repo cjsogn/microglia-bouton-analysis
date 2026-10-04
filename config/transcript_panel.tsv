@@ -1,0 +1,26 @@
+gene	mechanism	comparison_order
+C1qa	Complement_components	3
+C1qb	Complement_components	
+C1qc	Complement_components	
+C3	Complement_components	1
+C3ar1	Complement_receptor	2
+Itgam	CR3_subunit	
+Itgb2	CR3_subunit	
+Trem2	TREM2_associated_signalling	9
+Tyrobp	TREM2_associated_signalling	
+Mertk	TAM_receptor	11
+Axl	TAM_receptor	10
+Cd68	Lysosome_associated_marker	
+Lgals3	Galectin_associated_function	
+Apoe	Reactive_microglial_state	
+Cst7	Reactive_microglial_state	
+Spp1	Reactive_microglial_state	
+Clec7a	Reactive_microglial_state	
+P2ry12	Microglial_identity_and_homeostatic_state	6
+Tmem119	Microglial_identity_and_homeostatic_state	7
+Cx3cr1	Microglial_identity_and_homeostatic_state	8
+Sall1	Microglial_identity_and_homeostatic_state	
+Adrb2	Adrenergic_receptor	12
+Il1b	Inflammatory_and_chemotactic_context	5
+Tnf	Inflammatory_and_chemotactic_context	4
+Ccl2	Inflammatory_and_chemotactic_context	

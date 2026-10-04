@@ -19,7 +19,10 @@ write_gz <- function(x, path) {
     on.exit(close(con))
     write.table(x, con, sep = "\t", quote = FALSE, row.names = FALSE)
 }
-panel <- c("C3", "C3AR1", "C1QA", "TNF", "IL1B", "P2RY12", "TMEM119", "CX3CR1", "TREM2", "AXL", "MERTK")
+script_file <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE))
+panel_file <- file.path(dirname(normalizePath(script_file)), "../../config/transcript_panel.tsv")
+panel <- toupper(read.delim(panel_file, check.names = FALSE)$gene)
+stopifnot(length(panel) == 25L, !anyDuplicated(panel))
 jobs <- list(primary = list(selection = "broad", mincells = 20, minage = 0), final_annotation = list(selection = "final",
     mincells = 20, minage = 0), min50_nuclei = list(selection = "broad", mincells = 50, minage = 0),
     age_overlap = list(selection = "broad", mincells = 20, minage = 57))

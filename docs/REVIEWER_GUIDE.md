@@ -22,7 +22,11 @@ Review count-matrix columns, sample and donor metadata, expression filters, mode
 
 The GSE244652 primary model uses original gene counts without a length offset. Its length-scaled import is a sensitivity. The Moon condition libraries support descriptive summaries, not replicated treatment tests. No retained donor model uses imputation.
 
-Subsystem READMEs give the source-processing commands. Reclustering requires inspection of identity markers before reusing cluster identifiers. Target-panel genes are excluded from the independent putamen annotation features.
+Subsystem READMEs give the source-processing commands. Reclustering requires inspection of identity markers before reusing cluster identifiers. The fixed putamen annotation exclusions are C3, C3AR1, C1QA, TNF, IL1B, P2RY12, TMEM119, CX3CR1, TREM2, AXL and MERTK. ADRB2 is reported but is not an annotation exclusion. Changing the reporting panel does not change these features or the retained nuclei.
+
+The neutral 25-gene catalogue and the ordered 12-gene comparison subset are defined in `config/transcript_panel.tsv`. The comparison subset covers complement, inflammatory cytokines, homeostatic markers, engulfment receptors and adrenergic signalling. It is a descriptive selection, not a validated signature. The full panel is reported in Tables S15–S17. Expected directions are not used in selection, inference or reporting. BH correction remains over all expression-filtered genes in each fit.
+
+`scripts/export_transcript_panels.py` extracts the full panel from completed fits without refitting or recalculating FDR. `scripts/verify_geo_metadata.py` compares retained sample labels and donor covariates with unpacked GEO SOFT files and the published putamen donor table. Neither script changes its input files. Use `--help` for input paths.
 
 ## Validation limits
 

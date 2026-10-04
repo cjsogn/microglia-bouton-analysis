@@ -31,7 +31,9 @@ from xu_paths import WORK as ROOT
 OUT = ROOT / "results/independent_annotation"
 OUT.mkdir(exist_ok=True)
 SEED = 20260910
-PANEL = [
+# These fixed exclusions belong to the cell-annotation procedure. Reporting
+# additional genes must not change the selection of nuclei used for inference.
+ANNOTATION_EXCLUSIONS = [
     "C3",
     "C3AR1",
     "C1QA",
@@ -85,7 +87,7 @@ def write_annotation_evidence(a, key, label):
         method="t-test",
         n_genes=40,
         use_raw=False,
-        mask_var=~a.var_names.isin(PANEL),
+        mask_var=~a.var_names.isin(ANNOTATION_EXCLUSIONS),
     )
     sc.get.rank_genes_groups_df(a, group=None).to_csv(OUT / f"{label}_top_markers.csv", index=False)
     a.obs.to_csv(OUT / f"{label}_cells.csv.gz")
@@ -94,7 +96,7 @@ def write_annotation_evidence(a, key, label):
 def embedding(a, label, resolution):
     sc.pp.highly_variable_genes(a, n_top_genes=3000, flavor="seurat", batch_key="donor")
     excluded = a.var_names.isin(
-        PANEL + ["XIST", "RPS4Y1", "DDX3Y", "UTY", "KDM5D"]
+        ANNOTATION_EXCLUSIONS + ["XIST", "RPS4Y1", "DDX3Y", "UTY", "KDM5D"]
     ) | a.var_names.str.startswith(("MT-", "RPL", "RPS"))
     a.var.loc[excluded, "highly_variable"] = False
     b = a[:, a.var.highly_variable].copy()

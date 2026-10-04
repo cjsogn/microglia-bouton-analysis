@@ -12,7 +12,10 @@ out <- normalizePath(args[2], mustWork = FALSE)
 if (dir.exists(out)) stop("Use a fresh output directory")
 if (identical(input, out) || startsWith(out, paste0(input, "/"))) stop("Output must be outside inputs")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
-panel <- c("C3", "C3AR1", "C1QA", "TNF", "IL1B", "P2RY12", "TMEM119", "CX3CR1", "TREM2", "AXL", "MERTK")
+script_file <- sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE))
+panel_file <- file.path(dirname(normalizePath(script_file)), "../../../config/transcript_panel.tsv")
+panel <- toupper(read.delim(panel_file, check.names = FALSE)$gene)
+stopifnot(length(panel) == 25L, !anyDuplicated(panel))
 jobs <- list(primary = list(selection = "primary", formula = ~age_years + sex + group), pmi_adjusted = list(selection = "primary",
     formula = ~age_years + sex + pmi_hours + group), unadjusted = list(selection = "primary", formula = ~group),
     harmony_annotation = list(selection = "harmony", formula = ~age_years + sex + group), concordant_annotation = list(selection = "concordant",
@@ -56,6 +59,7 @@ for (name in names(jobs)) {
     p <- p[match(panel, p$gene), ]
     p$analysis <- name
     p$tested <- !is.na(p$P.Value)
+    p$measured <- p$gene %in% rownames(counts)
     p$n_control <- sum(m$group == "CTRL")
     p$n_pd <- sum(m$group == "PD")
     p$n_tested_genes <- sum(keep)
