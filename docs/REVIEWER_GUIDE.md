@@ -8,13 +8,15 @@ The README gives the short count- and measurement-level reruns. These reproduce 
 
 The mouse RNA runner copies only required inputs and records their hashes. For secondary morphology, `--topology-source deposited` explicitly selects retained measurements. Use `--topology-source regenerated` after topology extraction in the same output tree. An explicit missing input stops the analysis.
 
+The Iba1 morphology-mask workflow is in `code/morphology_processing/`. Its README separates preprocessing, initial segmentation and cell splitting, and identifies the retained eligibility table needed for downstream analysis. The recorded settings are exposed for review without treating them as validated defaults for other image acquisitions.
+
 ## Statistical review
 
 Animals are the independent imaging units. Review count pooling before enrichment ratios, equal regional weighting, paired marker comparisons, exact animal-label tests, confidence-set inversion and the stated multiple-testing families. Boutons, stacks and cells are not independent treatment replicates.
 
 The transmitter-class comparison is exploratory. The primary morphology permutation recomputes the control percentile in every allocation. The exploratory mixed-model screen uses the same specified models when checking additional optimizers. Failed or nonconverged fits remain visible in its diagnostics.
 
-The secondary morphology display divides effects by the SD across retained animals. The primary branch-count display uses its specified pairwise SD. Precision intervals from `equivalence_tests.py` are descriptive confidence sets, not equivalence tests.
+The secondary morphology display divides effects by the SD across retained animals. The primary branch-count display uses its specified pairwise SD. Precision intervals from `precision_intervals.py` are descriptive confidence sets, not equivalence tests.
 
 ## Bioinformatics review
 

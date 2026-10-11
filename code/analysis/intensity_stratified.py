@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Intensity-standardised raw-rate sensitivity reported in Supplementary methods.
+"""Intensity-standardised raw-rate sensitivity.
 
 The retained calculation accounts for differences in the distribution of
 object intensity across conditions. It compares raw geometric rates, not

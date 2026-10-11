@@ -153,3 +153,11 @@ def test_confidence_grid_does_not_report_truncated_or_disconnected_interval():
     ]:
         with pytest.raises(ValueError, match=message):
             checked_log_bounds(grid, accepted)
+
+
+def test_precision_intervals_reject_invalid_levels():
+    from precision_intervals import exact_interval
+
+    for level in (0, 1):
+        with pytest.raises(ValueError, match="Confidence level"):
+            exact_interval([], [], "Control", "Treatment", level)

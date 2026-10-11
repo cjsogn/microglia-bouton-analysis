@@ -245,7 +245,6 @@ def deconvolve_xy(image_3d, psf_sigma_um=None, n_iterations=6, voxel_xy=None):
 
     # Build 2D Gaussian PSF kernel (must be normalized to sum=1)
     kernel_radius = int(np.ceil(4 * psf_sigma_px))
-    size = 2 * kernel_radius + 1
     y, x = np.mgrid[-kernel_radius : kernel_radius + 1, -kernel_radius : kernel_radius + 1]
     psf_2d = np.exp(-(x**2 + y**2) / (2 * psf_sigma_px**2))
     psf_2d /= psf_2d.sum()

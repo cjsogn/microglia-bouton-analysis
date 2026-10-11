@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Does the count model's conclusion depend on the fixed negative-binomial dispersion?
+"""Sensitivity of count-model estimates to fixed negative-binomial dispersion.
 
-The model-based check fixes the NB dispersion at alpha = 1.0 rather than estimating it, because
-GEE with four to five clusters per group cannot estimate it stably. That is a choice, so this
-refits every reported comparison across dispersions from 0.01 (near-Poisson) to 10 (heavily
-overdispersed) and records the point estimates. The Supplementary methods quote this sweep; this
-file is what makes that sentence true.
+The primary count-model check fixes alpha at 1.0. This script refits each
+comparison across the recorded dispersion grid and exports the point estimates.
+Cluster counts are small, so the sweep is descriptive rather than a substitute
+for the animal-level exact tests.
 """
 
 from __future__ import annotations

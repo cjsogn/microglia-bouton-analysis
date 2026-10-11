@@ -14,10 +14,10 @@ python -m pip install -r requirements-core.txt
 
 | Dependency set | Purpose |
 | --- | --- |
-| `requirements-core.txt` | Processed imaging, morphology and count-level runners, with tests |
+| `requirements-core.txt` | Processed imaging, morphology and count-level runners |
 | `requirements-single-cell.txt` | Raw transcriptomic preparation and annotation |
 | `requirements-raw-image.txt` | Confocal preprocessing with the recorded OpenCV backend |
-| `requirements-dev.txt` | Formatting and lint checks |
+| `requirements-dev.txt` | All regression tests, formatting and lint checks, including the raw-image backend |
 
 Core numerical versions were NumPy 2.2.6, pandas 2.3.3, SciPy 1.15.3, statsmodels 0.14.5 and pyarrow 23.0.1. The single-cell environment contained Scanpy 1.11.5, AnnData 0.12.6, harmonypy 0.2.0, scikit-learn 1.9.0, numba 0.67.0 and llvmlite 0.49.0. Complete direct dependency pins are in the requirement files.
 
@@ -44,4 +44,4 @@ Check the resulting versions against this record. A current installer may resolv
 
 Use up to 14 workers where the entry point supports them, with bounded batches. Set numerical-library threads to one per process to avoid multiplying worker and BLAS thread counts. Large confocal stacks need a representative memory check before concurrent processing. Preserve the recorded seeds, thresholds, models and number of spatial shifts.
 
-Record package versions, commands, source checksums and output locations for each run. Keep inputs, local environments and outputs outside the GitHub code tree. The validation files in the full submission package contain the executed logs.
+Record package versions, commands, source checksums and output locations for each run. Keep inputs, local environments and outputs outside the GitHub code tree. Detailed reproduction logs are supplied separately with the data bundle.

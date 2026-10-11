@@ -1,6 +1,6 @@
 # Moon microglial receptor and temporal profiles
 
-Figure 7B contains the same gene panel as the replicated mouse and human analyses. Figure 7C contains additional receptors, without duplicating genes from 7B. Dot area represents detection prevalence and colour represents the descriptive change relative to PBS. Figure S4 reports absolute prevalence and mean log1p expression.
+These analyses summarize the shared gene panel and an additional receptor catalogue. Outputs include detection prevalence, mean expression and descriptive expression ratios relative to PBS.
 
 The condition libraries support descriptive profiles, not treatment tests with cells as independent replicates.
 

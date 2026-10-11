@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Paired TH-versus-comparator treatment interactions for Figure 3 and Table S6.
+"""Paired TH-versus-comparator treatment interactions.
 
 Counts are pooled within animal and region before forming enrichment. TH and
 each comparator are paired within the same animal and region on the log scale.

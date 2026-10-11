@@ -28,16 +28,17 @@ See [ANALYSIS_SCOPE.md](ANALYSIS_SCOPE.md) for commands, marker selection, outpu
 
 | Stage | Script |
 | --- | --- |
+| Acquisition to restored volumes, initial segmentation and merged-cell splitting | `code/morphology_processing/run_masks.py` |
 | Final masks to topology features and terminal-branch barcodes | `code/analysis/morph1_topology_features.py` |
 | Primary branch-count, regional and threshold analyses | `code/analysis/morph2_persistent_branches.py` |
 | Primary-only statistical runner | `scripts/reproduce_morphology_primary.py` |
 | Secondary descriptor comparisons from retained measurements | `code/analysis/morph3_secondary_features.py` |
 
-Final cell masks and morphology measurements are supplied under `coauthor_inputs/morphology/` in the data bundle. The topology script starts from final masks. It is not an implementation of the earlier segmentation and iterative mask-refinement workflow.
+Final cell masks and morphology measurements are supplied under `coauthor_inputs/morphology/` in the data bundle. The topology script starts from final masks. The separate [mask-processing workflow](../code/morphology_processing/README.md) exposes the recorded preprocessing, initial segmentation and merged-cell splitting. It uses explicit input manifests and fresh output directories.
 
 ## Retained-source limits
 
-The final general morphology feature table is available. Its complete extraction and iterative mask-refinement workflow is not verified as a portable pipeline in this release. The exploratory mixed-model screen is implemented in `code/analysis/morph4_exploratory_mixed_models.py`. Run it with `--check-optimizers` to check convergence under the recorded model specification. This screen is separate from the secondary exact tests.
+The final general morphology feature table is available. Its complete extraction is not verified as a portable pipeline in this release. Mask-generation source reconciliation and function checks do not replace a complete rerun of every raw acquisition. The exploratory mixed-model screen is implemented in `code/analysis/morph4_exploratory_mixed_models.py`. Run it with `--check-optimizers` to check convergence under the recorded model specification. This screen is separate from the secondary exact tests.
 
 The density multiplicity correction starts from `coauthor_inputs/pipeline/results/absolute_density_treatment_effects.tsv`. The brightness restrictions use the retained `coauthor_inputs/source_data/S12_brightness_restricted.tsv`. Their upstream generators have not been verified in this release. These are retained-input reproduction boundaries, not evidence that the stored results are incorrect.
 

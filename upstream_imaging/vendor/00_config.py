@@ -3,7 +3,6 @@ Configuration for the microglia-synapse interaction analysis pipeline:
 paths, voxel dimensions, channel maps, and marker-specific parameters.
 """
 
-import os
 from pathlib import Path
 
 # Path configuration
@@ -41,7 +40,7 @@ CHANNEL_MICROGLIA = 1  # Ch1 (red) = iba1
 # Dataset structure
 MARKERS = ["vglut1", "vglut2", "vgat", "gad65", "5HT", "ChaT", "TH", "VNUT"]
 
-# Markers that label axons + varicosities (need elongation/tubeness filtering)
+# Markers that label axons and varicosities (use elongation filtering)
 AXON_MARKERS = ["5HT", "TH", "ChaT"]
 
 # Markers that produce clearly punctate labeling
@@ -54,7 +53,7 @@ TREATMENT_MAP = {
     "livl": "LPS_60d",
 }
 
-# Condition ordering for plots
+# Condition ordering
 CONDITION_ORDER = ["Control", "LPS_72h", "LPS_60d"]
 CONDITION_CODES = ["kiv", "liv", "livl"]
 
@@ -85,10 +84,8 @@ TOPHAT_RADIUS_PX = int(round(TOPHAT_RADIUS_UM / VOXEL_XY))  # ~23 pixels
 # Per-slice intensity normalization
 NORMALIZATION_PERCENTILE = 99.5  # percentile for reference intensity
 
-# The original pipeline estimated marker-channel bleed-through from voxels
-# selected using Iba1.  That makes marker preprocessing depend on the outcome
-# channel.  The overlap-blind reanalysis keeps this False.  A non-zero
-# coefficient may only be supplied from an external single-stain calibration.
+# Data-derived cross-channel correction is disabled. A nonzero coefficient
+# requires an external single-stain calibration.
 APPLY_DATA_DERIVED_BLEEDTHROUGH_CORRECTION = False
 
 # Light denoising: 3D Gaussian (anisotropic)
@@ -122,16 +119,14 @@ CLOSING_RADIUS_PX = max(1, int(round(CLOSING_RADIUS_UM / VOXEL_XY)))  # ~3 px
 # Iba1 is a cytoplasmic/process marker.  Unrestricted 3-D hole filling can
 # incorrectly convert genuine nuclear and inter-process voids into segmented
 # Iba1 volume.  The primary mask therefore does not fill enclosed cavities;
-# physically capped filling is retained as a prespecified sensitivity check.
+# physically capped filling is used only in sensitivity checks.
 MAX_MICROGLIA_HOLE_VOLUME_UM3 = 0.0
 
 # Size filtering
 MIN_MICROGLIA_VOXELS = 50  # minimum Iba1-positive fragment size (~0.15 um^3)
 # The geometry endpoint concerns all resolved Iba1-positive processes, not only
-# connected components large enough to resemble a complete cell.  A historical
-# 5-um3 second-stage cutoff removed visible disconnected process segments from
-# thin stacks.  The final physical cutoff therefore matches the prespecified
-# 50-voxel noise floor above; 5 um3 is retained as a sensitivity mask.
+# connected components large enough to resemble a complete cell. The physical
+# cutoff retains small process fragments. A 5 um3 cutoff is a sensitivity mask.
 MIN_MICROGLIA_VOLUME_UM3 = 0.15
 
 # Synapse segmentation parameters

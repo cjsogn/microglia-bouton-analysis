@@ -1,4 +1,4 @@
-"""Focused Figure 5 extension: regional TH temporal estimates and profile test.
+"""Regional TH temporal estimates and profile test.
 
 Independent animals, not longitudinal pairs. Per-region tests call the existing
 exact allocation/confidence-set implementation without changing its grid or
@@ -249,7 +249,7 @@ def main():
         PIPELINE / "results/uniform_stack_summary.tsv",
     ]
     provenance = dict(
-        analysis="exploratory Figure 5 regional extension",
+        analysis="exploratory regional temporal contrasts",
         seed=None,
         randomisation="exhaustive enumeration; no Monte Carlo sampling",
         interval="existing exact-test inversion on 1201 log shifts, effect +/-3, step 0.005",
@@ -259,7 +259,7 @@ def main():
         estimator="Observed and expected counts pooled within animal, marker and region before forming enrichment ratios.",
         input_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},
     )
-    (out / "regional_figure5_provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    (out / "regional_temporal_provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     print(
         temporal.to_string(index=False),
         "\nInteraction:",

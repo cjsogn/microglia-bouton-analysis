@@ -22,23 +22,23 @@
   {
     "path": "vendor/00_config.py",
     "original_sha256": "830fc29b9f493fbe0e0d2d9373573b2989482be199235796f3fbc61f520a6e5b",
-    "release_sha256": "abb19a8aab464c2817cca643e9a67590648b9c0f577c5d7651814668ebc5db53",
-    "release_note": "Unused display-only constants removed. Numerical analysis settings retained."
+    "release_sha256": "024270a871bd3eccbb3e526a6f9d731875e44b3eea52b8c961a4e4a09481381d",
+    "release_note": "Numerical processing settings retained."
   },
   {
     "path": "vendor/01_preprocessing.py",
     "original_sha256": "b7dad1595f828d5c327b8e9e9dafef50e88662be534774e97249473b6733c473",
-    "release_sha256": "518ca5dd6d4dae29939441766125cb7474b6fd518fbcf36bc94debcec5784949"
+    "release_sha256": "4f87ae1ee79a24e555a24344e8da2a98e8d8305d68c27093f11d205edefc3251"
   },
   {
     "path": "vendor/02_microglia_segmentation.py",
     "original_sha256": "983ef474db0c22bbc01eb86c9c6e884dda184959b43c296ce1c7d570c0ecefa9",
-    "release_sha256": "4df6d1a8fb0b0f2a954f049ec1fbfde826e8fdc7523c3a126e495b6b9e4e0109"
+    "release_sha256": "0fe6582102249a44f98c88759852ba1ce0ff1fcaffa96e38dcf1d641cf7a2180"
   },
   {
     "path": "vendor/03_synapse_segmentation.py",
     "original_sha256": "983f71e697ac5126e00328df86b60270527ef8a7dd47c85abcd4b2b2dbe89782",
-    "release_sha256": "63ee6b0c80598eeb0bbd2efd562c0c41e3d234754da3e5db30f7f67518f81d90"
+    "release_sha256": "298434bc5c2ef042746e1d73dce3465b65cc683a71778402c5695238d2e1e971"
   },
   {
     "path": "vendor/04_contact_geometry.py",

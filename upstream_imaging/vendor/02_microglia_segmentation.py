@@ -104,8 +104,7 @@ def fill_holes_by_volume(binary, max_hole_volume_um3, voxel_xy=None, voxel_z=Non
     """Fill only enclosed background components below a physical volume cap.
 
     A non-positive cap returns the input unchanged.  ``None`` reproduces the
-    historical unrestricted ``binary_fill_holes`` operation and is retained
-    only for explicit sensitivity analyses.
+    unrestricted ``binary_fill_holes`` operation for sensitivity analyses.
     """
     if voxel_xy is None:
         voxel_xy = config.VOXEL_XY
@@ -156,7 +155,7 @@ def morphological_refinement(
     max_hole_volume_um3 : float or None
         Physical cap for hole filling.  The configured primary value is 0
         (no filling).  Passing ``None`` explicitly is not interpreted as
-        legacy fill-all here; use :func:`fill_holes_by_volume` directly for
+        unrestricted filling here; use :func:`fill_holes_by_volume` directly for
         that sensitivity operation.
 
     Returns

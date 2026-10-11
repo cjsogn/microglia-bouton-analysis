@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Segmented-distance profiles for Figure S6.
+"""Segmented-distance profiles across the retained physical radii.
 
 Observed and shifted counts use the retained common edge-eligible population
 across radii. Counts are pooled within animal and region before enrichment is

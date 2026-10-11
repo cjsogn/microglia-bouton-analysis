@@ -15,7 +15,7 @@ or cell annotation.
 ```sh
 python3.12 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements-core.txt
+python -m pip install -r requirements-dev.txt
 export MG_BUNDLE_DIR="/path/to/03_data"
 export MG_OUTPUT_DIR="/path/to/new/reproduction_run"
 export MG_WORKERS=14
@@ -39,7 +39,7 @@ supported. Raw-image concurrency must also respect available memory.
 
 Use [the reviewer guide](docs/REVIEWER_GUIDE.md) for the review sequence and
 [the analysis map](docs/CURRENT_CODE_SCOPE.md) to locate supporting analyses
-and their current figure and table references. The files
+and their inputs and outputs. The files
 `scripts/validate_reproduction.py` and `docs/VALIDATION.md` describe the
 checks against the retained outputs. Numerical reproduction does not establish
 that every modelling assumption holds.
@@ -49,6 +49,7 @@ that every modelling assumption holds.
 | Module | Purpose |
 | --- | --- |
 | `upstream_imaging/` | Preprocessing, bouton/Iba1 segmentation, geometric endpoints, spatial null and mask sensitivity |
+| `code/morphology_processing/` | Iba1 cell-morphology preprocessing, segmentation and merged-cell splitting |
 | `code/analysis/estimate_enrichment.py` | Primary animal-level enrichment and exact tests |
 | `code/analysis/estimate_interactions.py`, `timepoint_specificity.py` | Paired marker and temporal specificity |
 | `code/analysis/regional_tests.py`, `regional_temporal_contrast.py` | Regional estimates and interactions |
@@ -77,8 +78,8 @@ significance. The pooled Moon libraries support descriptive summaries, not
 animal-level treatment tests. No retained model uses imputation.
 
 The shared panel definition is `config/transcript_panel.tsv`: 25 curated genes,
-with 12 marked for the compact comparison. All 25 are retained in the numerical
-supplement. The reporting subset does not define the multiple-testing family.
+with 12 marked for the compact comparison. All 25 are retained in the result
+tables. The reporting subset does not define the multiple-testing family.
 See the reviewer guide for result extraction and primary-record metadata checks.
 
 Subsystem READMEs explain upstream stages. For reclustering, inspect identity
@@ -87,5 +88,16 @@ selections. Raw confocal acquisitions are stored separately and are not bundled.
 See [confocal processing](docs/CONFOCAL_PIPELINE.md) and
 [analysis scope](docs/ANALYSIS_SCOPE.md) for input requirements and scope limits.
 
-The existing study license is retained. Review ownership before public release.
+The code is distributed under the MIT license in `LICENSE`.
 Keep data, credentials, environments and generated outputs outside version control.
+
+## Check the code
+
+The development dependencies include the raw-image backend needed by the image
+processing tests. The tests use synthetic fixtures and do not require study data.
+
+```sh
+python -m pytest -q
+python -m ruff check .
+python -m ruff format --check .
+```

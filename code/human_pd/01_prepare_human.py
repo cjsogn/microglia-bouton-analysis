@@ -142,7 +142,7 @@ def main():
     codes = donors.get_indexer(mg.donor_id)
     assert np.all(codes >= 0)
     panel = pd.read_csv(args.panel, sep="\t")
-    # ADRB1 is also displayed in the retained Figure 7 temporal panels.
+    # Retain ADRB1 in the additional receptor summaries.
     panel_genes = set(panel.gene.str.upper()) | {"ADRB1"}
     gene_index = pd.Index(genes)
     for selection, keep in [

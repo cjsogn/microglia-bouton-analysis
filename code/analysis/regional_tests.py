@@ -211,7 +211,6 @@ def main():
     pd.DataFrame(rows).to_csv(OUT / "regional_tests.tsv", sep="\t", index=False)
 
     # Use pooled counts and inverted exact-test intervals, as in the primary analysis.
-    # The upstream region-resolved table uses the superseded stack-log estimator.
     from regional_temporal_contrast import regional_control_effects
 
     te = regional_control_effects(ar)

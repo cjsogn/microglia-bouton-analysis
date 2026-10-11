@@ -10,10 +10,8 @@ from scipy import ndimage
 from scipy.ndimage import maximum_filter, label as ndi_label
 from skimage.segmentation import watershed
 from skimage.measure import regionprops
-from skimage.morphology import reconstruction, remove_small_objects
-from skimage.feature import hessian_matrix, hessian_matrix_eigvals
-from skimage.filters import threshold_otsu, threshold_triangle
-import warnings
+from skimage.morphology import reconstruction
+from skimage.filters import threshold_otsu
 
 from pathlib import Path
 import importlib.util
@@ -474,10 +472,8 @@ def watershed_segmentation(log_response, seeds, foreground, synapse_preprocessed
         trimmed = np.zeros_like(labels)
 
         for prop in props:
-            # Restrict per-object work to the object's bounding box.  The
-            # previous full-volume equality test was mathematically correct
-            # but rescanned every voxel once per object (often hundreds of
-            # full 3-D scans per stack).
+            # Restrict per-object work to its bounding box to avoid repeated
+            # scans of the full volume.
             bbox = prop.bbox
             slc = tuple(slice(bbox[i], bbox[i + 3]) for i in range(3))
             labels_local = labels[slc]
@@ -499,10 +495,8 @@ def watershed_segmentation(log_response, seeds, foreground, synapse_preprocessed
 
         labels = trimmed
 
-    # Do not apply a fixed 3x3 opening here.  It contradicts the prespecified
-    # physical minimum volumes (for example, VGLUT1 candidates may validly
-    # occupy fewer than nine lateral pixels) and makes acceptance depend on an
-    # undocumented pixel-scale rule.  Noise and size rejection occur below.
+    # Noise and size rejection use the physical thresholds below, without
+    # an additional pixel-scale opening.
 
     return labels
 
@@ -563,47 +557,6 @@ def compute_sphericity(prop, voxel_xy=None, voxel_z=None):
     return float(min(sa_sphere / surface, 1.0)) if surface > 0 else 0.0
 
 
-def compute_tubeness_at_point(image, sigma_um, voxel_xy, voxel_z):
-    """
-    Compute Hessian-based tubeness measure for the image at a given scale.
-
-    High tubeness = elongated/tubular structure (axon).
-    Low tubeness = blob/spherical (bouton).
-
-    Parameters
-    ----------
-    image : ndarray (Z, Y, X)
-    sigma_um : float, scale in um (use bouton scale)
-    voxel_xy, voxel_z : float
-
-    Returns
-    -------
-    tubeness : ndarray (Z, Y, X), tubeness response
-    """
-    sigma_xy_px = sigma_um / voxel_xy
-    sigma_z_px = sigma_um / voxel_z
-
-    # Compute Hessian at this scale (2D per slice for speed)
-    tubeness = np.zeros(image.shape, dtype=np.float32)
-
-    for z in range(image.shape[0]):
-        try:
-            H = hessian_matrix(image[z], sigma=sigma_xy_px, order="rc")
-            eigvals = hessian_matrix_eigvals(H)
-            # Tubeness: |lambda_1| when lambda_1 >> lambda_2 (one strong curvature)
-            # For bright tubes: lambda_1 < 0 (strong), lambda_2 ~ 0
-            l1 = eigvals[0]  # most negative
-            l2 = eigvals[1]  # least negative
-            # Frangi-like tubeness for bright tubes on dark background
-            tube_response = np.abs(l1) * np.exp(-0.5 * (l2 / (l1 + 1e-10)) ** 2)
-            tube_response[l1 >= 0] = 0  # only dark lines (bright tubes)
-            tubeness[z] = tube_response
-        except Exception:
-            pass
-
-    return tubeness
-
-
 def filter_objects(
     labels,
     synapse_raw,
@@ -645,12 +598,8 @@ def filter_objects(
         Full marker parameter dict (from config.get_marker_params).
         Used for marker-channel morphology and thresholds.
     microglia_mask : ndarray (Z, Y, X) bool, optional
-        Accepted only so that it can be refused. An earlier version of this pipeline computed a
-        per-label microglial overlap fraction here and let it influence candidate acceptance,
-        which makes detection depend on the quantity the study goes on to measure. Passing
-        anything other than None raises. The argument is kept rather than deleted so that the
-        prohibition is visible at the call site and cannot be reintroduced silently; the guard is
-        pinned by test_iba1_dependent_candidate_filter_fails_loudly.
+        Must be None. Candidate acceptance uses only the transmitter-marker
+        channel. Any supplied microglial mask raises ValueError.
 
     Returns
     -------
@@ -963,7 +912,7 @@ def segment_synapses(
     if shared_detection.get("detection_parameters") != expected_detection_parameters:
         raise ValueError("shared marker detection parameters do not match specification")
     log_response = shared_detection["log_response"]
-    noise_sigma_log = float(shared_detection["noise_sigma_log"])
+    float(shared_detection["noise_sigma_log"])  # Validate the cached noise scalar.
     # Seed rescue mutates this map downstream, so each specification gets an
     # independent copy while the immutable LoG response remains shared.
     seeds = shared_detection["seeds"].copy()

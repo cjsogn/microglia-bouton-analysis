@@ -18,7 +18,7 @@ python upstream_imaging/scripts/04_run_torus_null.py --dataset LPS --marker TH -
 
 This example processes TH. Repeat the relevant stages for the other selected markers and required specifications. MPTP processing uses a separate fresh output directory and `--dataset MPTP --mptp-root /path/to/original/MPTP --marker TH --marker vglut1` when preparing the manifest.
 
-`06_mask_and_specification_sensitivity.py` implements the detector and mask comparisons in Figure S1. `MG_RAW_MANIFEST` can select another explicitly prepared manifest. Raw preprocessing requires the recorded OpenCV backend and stops if it is unavailable.
+`06_mask_and_specification_sensitivity.py` implements the detector and mask sensitivity comparisons. `MG_RAW_MANIFEST` can select another explicitly prepared manifest. Raw preprocessing requires the recorded OpenCV backend and stops if it is unavailable.
 
 Processing outputs go to `MG_OUTPUT_DIR/upstream_imaging`. The short imaging runner reads the retained `coauthor_inputs/pipeline/` tree. It does not automatically switch to a newly processed raw-image run. A complete new processing run must be checked before its outputs replace the statistical inputs.
 

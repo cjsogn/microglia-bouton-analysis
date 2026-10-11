@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Exploratory within-animal transmitter-class contrast for Figures 2 and 5.
+"""Exploratory within-animal transmitter-class contrast.
 
 For each animal, compare mean TH/ChAT enrichment with mean enrichment across
 the other retained transmitter markers on the log-ratio scale. One-sample tests
@@ -206,7 +206,7 @@ def main():
     B.to_csv(V3 / "baseline_contrast_per_marker.tsv", sep="\t", index=False)
     C.to_csv(V3 / "baseline_contrast_per_region.tsv", sep="\t", index=False)
     pd.set_option("display.width", 220)
-    print("\n=== PRIMARY: class contrast, animal-level, no exchangeability assumption ===")
+    print("\n=== EXPLORATORY ANIMAL-LEVEL CLASS CONTRAST ===")
     print(A.round(4).to_string(index=False))
     print("\n=== EACH MARKER AGAINST THE FAST AMINO-ACID MEAN ===")
     print(B.round(4).to_string(index=False))

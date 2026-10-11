@@ -1,6 +1,6 @@
 # Human putamen microglia, GSE161045
 
-This pipeline produces the putamen column to the right of the SNpc column in the human PD analysis. It uses independent microglial annotation and donor pseudobulk. The two human cohorts are fitted separately and do not alter mouse FDR families.
+This pipeline estimates PD-versus-control expression differences in putamen microglia using independent annotation and donor pseudobulk. The two human cohorts are fitted separately and do not alter mouse FDR families.
 
 The input bundle is `03_data/xu_putamen/`. It includes raw files, retained annotations, donor counts, differential-expression results and provenance. No raw counts or generated results belong in the code-only repository.
 

@@ -82,10 +82,15 @@ def allocation_stats(x, g, ref, trt):
 
 def exact_interval(x, g, ref, trt, level):
     """Confidence set by inverting the two-sided exact test at the requested level."""
+    from confidence_grid import checked_log_bounds
+
+    if not 0 < level < 1:
+        raise ValueError("Confidence level must lie strictly between zero and one")
     x, g, nt, n, combos = allocation_stats(x, g, ref, trt)
     obs = x[g == trt].mean() - x[g == ref].mean()
     keep = []
-    for d in np.linspace(obs - 2.0, obs + 2.0, 1601):
+    grid = np.linspace(obs - 2.0, obs + 2.0, 1601)
+    for d in grid:
         v = x.copy()
         v[g == trt] -= d
         o2 = v[g == trt].mean() - v[g == ref].mean()
@@ -96,7 +101,8 @@ def exact_interval(x, g, ref, trt, level):
             s[i] = v[m].mean() - v[~m].mean()
         if np.mean(np.abs(s) >= abs(o2) - 1e-12) > (1 - level):
             keep.append(d)
-    return (min(keep), max(keep)) if keep else (np.nan, np.nan)
+    checked_log_bounds(grid, keep)
+    return min(keep), max(keep)
 
 
 def precision_summary(v, ref, trt):

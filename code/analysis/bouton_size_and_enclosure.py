@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Object-size and intensity summaries for Figure S6 and Table S15.
+"""Object-size and intensity summaries by marker and geometric endpoint.
 
 The analysis compares detected, contacted, completely included and distant
 objects within the recorded marker and field strata. Volume-stratified intensity

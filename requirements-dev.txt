@@ -1,2 +1,2 @@
--r requirements-core.txt
+-r requirements-raw-image.txt
 ruff==0.16.6

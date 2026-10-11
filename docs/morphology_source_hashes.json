@@ -1,0 +1,50 @@
+[
+  {
+    "path": "code/morphology_processing/parameters.py",
+    "release_sha256": "888a4c68f004d2d3c37b2dd2c6d716a585ad1b6be18a1aeef3ca4c2fd94d8664",
+    "sources": [
+      {
+        "name": "00_config.py",
+        "sha256": "0928b4b163487db631e32d4e0bd82bdabbf97b1e20ccd25f93e127f51c87f2d5"
+      },
+      {
+        "name": "03_segmentation_3d.py",
+        "sha256": "0289f78b437f14bc158ba379931850359321cd2078ff5a0239fef8bff7ac1c3b"
+      },
+      {
+        "name": "split_merged_cells_v6.py",
+        "sha256": "b69ce62924bb449d9ce3ef509852a3c027a42d0f7bdeecb742419f93039d17de"
+      }
+    ]
+  },
+  {
+    "path": "code/morphology_processing/preprocess.py",
+    "release_sha256": "a7fd860406e532104fac1d7209ad95c57ef961067594ca44c1da2afd9af1f98a",
+    "sources": [
+      {
+        "name": "01_preprocessing.py",
+        "sha256": "e41fd7183f40879098efdf9a299f31d215d60f7a8b22e5e4d3f92ec96573b40d"
+      }
+    ]
+  },
+  {
+    "path": "code/morphology_processing/segment.py",
+    "release_sha256": "a7c3f6cd5851da1bd4b4c59292550362cb96b5c207efc91786b0b92ff6e91d60",
+    "sources": [
+      {
+        "name": "03_segmentation_3d.py",
+        "sha256": "0289f78b437f14bc158ba379931850359321cd2078ff5a0239fef8bff7ac1c3b"
+      }
+    ]
+  },
+  {
+    "path": "code/morphology_processing/split_cells.py",
+    "release_sha256": "6265a97b3071f6809fba4d3dc2037d801eceb3799252bb68b20323044abbf89a",
+    "sources": [
+      {
+        "name": "split_merged_cells_v6.py",
+        "sha256": "b69ce62924bb449d9ce3ef509852a3c027a42d0f7bdeecb742419f93039d17de"
+      }
+    ]
+  }
+]

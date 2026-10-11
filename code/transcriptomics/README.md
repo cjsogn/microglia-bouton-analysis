@@ -1,6 +1,6 @@
 # Mouse transcriptomic analyses
 
-Figure 7A displays the LPS contrasts and Figure 7D displays the MPTP contrasts. Figure S3 reports their intervals. Dataset descriptions and the curated panel are in Tables S11 and S15. Import and sample sensitivity results are in Table S17.
+The workflow fits separate LPS and MPTP contrasts, exports whole-transcriptome estimates and confidence intervals, and extracts the shared gene panel. Import and sample-omission sensitivities are separate from the primary fits.
 
 ## Reproduce the retained fits
 
@@ -40,7 +40,7 @@ The sensitivity script reads the original command metadata, compares the two imp
 
 ## Input naming
 
-`config/transcript_panel.tsv` is the shared 25-gene definition. Nonmissing `comparison_order` values identify the 12 genes in the comparative display, including Adrb2. These genes cover the processes discussed in the study, while the complete panel remains available in Tables S15–S17. Panel extraction does not change any expression filter, fitted estimate or whole-transcriptome FDR value.
+`config/transcript_panel.tsv` is the shared 25-gene definition. Nonmissing `comparison_order` values identify the 12 genes in the compact comparison, including Adrb2. The complete panel is retained in the numerical outputs. Panel extraction does not change any expression filter, fitted estimate or whole-transcriptome FDR value.
 
 To extract the full panel from the retained complete fits:
 
